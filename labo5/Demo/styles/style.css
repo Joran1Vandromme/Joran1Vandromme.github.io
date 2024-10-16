@@ -1,0 +1,20 @@
+h1, h2{
+    color : deepskyblue;
+    font-size : 4em;
+}
+.styleGreen{
+    color : green;
+}
+#opmaak {
+    color : bisque;
+}
+
+section>h1{
+    color : maroon;
+    font-size : 3em;
+}S
+
+ section h1{
+    color : papayawhip;
+    font-size : 1em;
+}
