@@ -1,0 +1,19 @@
+body{
+    margin: 0px;
+    background-color: #EDF2F4;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+header h1 {
+    margin: 0px;
+    color: gray}
+
+header{
+    height: 480px;
+    background-image: url(../Images/640x480.gif);
+    background-repeat: no-repeat;
+    background-color: #FFFFFF;
+    background-size: cover;
+}
