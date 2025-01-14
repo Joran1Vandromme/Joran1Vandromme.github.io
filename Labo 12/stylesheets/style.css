@@ -1,0 +1,42 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: lightskyblue;
+    font-family: Chalkboard, sans-serif;
+}
+
+h1 {text-align: center;}
+
+.container {
+    margin: 0 auto;
+    width: 80%;
+
+}
+
+
+.border {border: 2px solid black;}
+
+
+.grey-box {
+    background: grey;
+    flex: 0 1 auto; /* 1ste getal flex grow 2e getal flexs shrink */
+    /* mag dus niet groeien wel krimpen */
+    /*3e getal of auto = breedte van de box*/
+    /*Indien geen breedte opgegeven is breedte van de inhoud*/
+    width: 100px;
+    margin: 10px;
+    padding: 20px;
+    font-size: 2em;
+
+}
+
+section {
+    background: coral;
+    height: 500px;
+    display: flex;
+    /*flex-direction: row;*/
+    /*flex-direction: row-reverse;*/
+    /*flex-wrap: wrap;*/
+    justify-content: center;
+    align-items: center;
+}

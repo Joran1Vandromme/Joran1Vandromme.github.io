@@ -12,7 +12,7 @@ header h1 {
 
 header{
     height: 480px;
-    background-image: url(../Images/640x480.gif);
+    background-image: url(../images/640x480.gif);
     background-repeat: no-repeat;
     background-color: #FFFFFF;
     background-size: cover;

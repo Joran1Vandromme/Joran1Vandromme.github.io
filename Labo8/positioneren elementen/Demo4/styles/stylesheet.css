@@ -1,0 +1,91 @@
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 1.2em;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#imgHeader {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#content {
+    float: left;
+    width: 70%;
+    margin-left: 1em;
+    margin-right: 1em;
+    box-sizing: border-box;
+}
+
+.box1 {
+    float: right;
+    width: 25%;
+    margin-right: 1.5em;
+    box-sizing: border-box;
+    background: url("../images/cocktail.gif") repeat-x;
+}
+
+.box1>h1 {
+    color: black;
+    font-size: 150%;
+}
+
+.box1>p>img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.box1 {
+    text-align: center;
+    border: 3px solid #007e7e;
+}
+.box1>h2 {
+    font-size: 130%;
+    color: darkred;
+}
+
+.box1>p {
+    padding-left: 1.2em;
+    padding-right: 1.2em;
+}
+
+.box1 a:hover {
+    background-color: brown;
+}
+
+a {
+    color: black;
+}
+
+h1 {
+    color: #007e7e;
+    font-size: 150%;
+}
+
+h2 {
+    color: #007e7e;
+    font-size: 130%;
+}
+
+#guarantee {
+    font-style: italic;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    padding: 20px;
+    color: rgb(444444);
+    border: 3px dotted white;
+    box-sizing: border-box;
+    padding: 25px 25px 25px 80px;
+    margin: 30px;
+    background: #a7cece url("../images/background.gif") no-repeat top left;
+}
+
+footer {
+    font-size: 0.6em;
+    clear: both;
+    text-align: center;
+}
