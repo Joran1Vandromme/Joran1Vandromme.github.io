@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Presi (MVP)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="styles/style.css">
+    <script type="module" src="code/app/main.js"></script>
+</head>
+<body>
+<section id="screen-home">
+<h1>Presi — client</h1>
+
+<div>Connection: <span id="status">disconnected</span></div>
+
+<div class="row">
+    <input id="room" placeholder="room id (optional)" />
+    <input id ="playerName" placeholder="username"/>
+</div>
+
+<div class="row">
+    <button id="joinRoom" disabled>Join Room</button>
+    <button id="makeRoom" >Make Room</button>
+</div>
+
+<pre id="out">Open the console (F12) to see raw messages too.</pre>
+
+<!-- Now we load external JS -->
+
+</section>
+
+<!-- LOBBY HTML -->
+<section id="screen-lobby" hidden>
+    <!-- Top bar: room code + connection status -->
+    <header id="topbar">
+        <h1>Lobby <span id="roomCode">———</span></h1>
+        <div id="connStatus">disconnected</div>
+    </header>
+
+    <!--functies die enkel de host moet kunnen -->
+    <section id="hostActions">
+        <button id="btnSettings" disabled>Game Settings</button>
+        <button id="btnStartGame" disabled>Start Game</button>
+        <button id="btnNewGame" disabled>New Game</button>
+    </section>
+
+    <!-- Player list -->
+    <section id="playersSection">
+        <h2>Players</h2>
+        <ul id="playerList" aria-live="polite">
+            <!-- hier renderen we spelers via js en de template hieronder-->
+        </ul>
+    </section>
+
+    <!-- Template for a player row (cloned by JS) -->
+    <template id="tplPlayerRow">
+        <li class="player-row" data-player-id="">
+            <span class="js-name"></span>
+            <span class="js-role"></span>
+            <button class="js-kick">Kick</button>
+        </li>
+    </template>
+
+    <footer id="footer">
+        <button id="btnLeave">Leave Lobby</button>
+    </footer>
+
+</section>
+</body>
+</html>

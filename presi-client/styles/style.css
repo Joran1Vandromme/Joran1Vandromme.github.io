@@ -37,3 +37,5 @@ input {
     border: 1px solid #ccc;
     border-radius: .4rem;
 }
+
+[hidden] {display: none}
