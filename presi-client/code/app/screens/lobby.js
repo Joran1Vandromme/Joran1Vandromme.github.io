@@ -1,9 +1,49 @@
 //haalt de lokale clientstate op (o.a. isHost, clientId) om UI-beslissingen te nemen zoals Kick-knoppen verbergen
 import { getState } from "../state.js";
+import { send } from "../socket.js";
 
-export function initLobby() {
-    // wire up buttons that exist on the lobby screen if needed later
+export function initLobby(){
+
+    // wire up buttons that exist on the lobby screen
+    const btnLeave = document.getElementById("btnLeave");
+    if (btnLeave) {
+        // koppel de eventlistener apart; laat die de bijhorende functie aanroepen
+        btnLeave.addEventListener("click", playerLeaveRoom);
+    }
+
+    // Event voor kick-knoppen (één listener voor de hele lijst)
+    const list = document.getElementById("playerList");
+    if (list) {
+        list.addEventListener("click", onLobbyListClick);
+    }
 }
+
+
+
+// stuurt leaveRoom; socket blijft open zodat client later kan opnieuw joinen/maken
+export function playerLeaveRoom() {
+    const s = getState();
+    // stuur leave (socket blijft open; je kan later opnieuw joinen/maken)
+    if (s.roomId) send("leaveRoom", {roomId: s.roomId});
+    else send("leaveRoom", {roomId: ""}); // defensief
+}
+
+/* click-handler op de lijst: vangt clicks op .js-kick knoppen op */
+export function onLobbyListClick(e) {
+    const btn = e.target.closest(".js-kick");
+    if (!btn) return;
+
+    const li = btn.closest("li");
+    const targetId = li?.dataset.playerId;
+    const s = getState();
+
+    // Alleen host mag kicken; niet jezelf
+    if (!s.isHost || !targetId || targetId === s.clientId) return;
+
+    send("kickPlayer", { roomId: s.roomId, playerId: targetId });
+}
+
+
 
 export function renderPlayersFromSnapshot(snap) {
     const state = getState();

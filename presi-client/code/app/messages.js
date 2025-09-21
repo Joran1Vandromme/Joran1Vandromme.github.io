@@ -44,6 +44,19 @@ export function registerMessageHandlers() {
         renderPlayersFromSnapshot(snapshot);
     });
 
+    on("left", ({ roomId }) => {
+        // verlaat de room lokaal; socket blijft verbonden
+        setState({isHost: false, roomId: "", phase: "home"});
+        showScreen("screen-home");
+    });
+
+    on("kicked", ({ roomId }) => {
+        // terug naar Home; verbinding blijft open
+        setState({ isHost: false, roomId: "", phase: "home" });
+        showScreen("screen-home");
+        // (optioneel) alert("You were kicked from the lobby.");
+    });
+
     // als we van de server een bericht met type: error --> error afhandeling
     on("error", ({ reason }) => alert(`Error: ${reason || "unknown"}`));
 }
