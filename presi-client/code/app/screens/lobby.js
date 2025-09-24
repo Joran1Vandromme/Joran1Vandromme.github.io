@@ -1,6 +1,7 @@
 //haalt de lokale clientstate op (o.a. isHost, clientId) om UI-beslissingen te nemen zoals Kick-knoppen verbergen
 import { getState } from "../state.js";
 import { send } from "../socket.js";
+import { initSettingsPanel, applySettingsHostMode, refreshSettingsUI } from "./settings.js";
 
 export function initLobby(){
 
@@ -16,6 +17,39 @@ export function initLobby(){
     if (list) {
         list.addEventListener("click", onLobbyListClick);
     }
+
+    // Settings knop toggelt het settings-venster
+    const btnSettings = document.getElementById("btnSettings");
+    const panel = document.getElementById("settingsPanel");
+    if (btnSettings && panel) {
+        btnSettings.addEventListener("click", () => {
+            panel.hidden = !panel.hidden;
+            if (!panel.hidden) {
+                // zorg dat de zichtbare waarden 100% sync zijn wanneer je het paneel opent
+                refreshSettingsUI();
+            }
+        });
+    }
+
+    // Start Game (voor nu placeholder)
+    const btnStart = document.getElementById("btnStartGame");
+    if (btnStart) {
+        btnStart.addEventListener("click", () => {
+            const s = getState();
+            if (!s.isHost) return;
+                     // guard: require at least 3 players before starting
+                const count = document.getElementById("playerList")?.children.length || 0;
+                if (count < 3) {
+                    alert("Need at least 3 players in the lobby to start the game.");
+                    return;
+                }
+            // TODO: implement start game flow (will include sending settings)
+            alert("Start Game (todo)");
+        });
+    }
+
+    // Wire the settings panel controls & initial host enablement
+    initSettingsPanel();
 }
 
 
@@ -40,8 +74,13 @@ export function onLobbyListClick(e) {
     // Alleen host mag kicken; niet jezelf
     if (!s.isHost || !targetId || targetId === s.clientId) return;
 
+    // Bevestiging tonen met de naam van de target
+    const targetName = li?.querySelector(".js-name")?.textContent?.replace(" 👑", "") ?? "this player";
+    if (!confirm(`Kick ${targetName}?`)) return;
+
     send("kickPlayer", { roomId: s.roomId, playerId: targetId });
 }
+
 
 
 
@@ -51,12 +90,14 @@ export function renderPlayersFromSnapshot(snap) {
     // pakte de juiste DOM-elementen om de knoppen juist weer te geven
     const btnSettings  = document.getElementById("btnSettings");
     const btnStartGame = document.getElementById("btnStartGame");
-    const btnNewGame   = document.getElementById("btnNewGame");
 
-    //checkt of de knoppen enabled moeten zijn
-    if (btnSettings)  btnSettings.disabled  = !state.isHost;
+    //checkt of de knoppen enabled moeten zijn (host-only)
+    // Settings button blijft NU altijd enabled zodat non-hosts het paneel kunnen openen (read-only)
+    if (btnSettings)  btnSettings.disabled  = false;
     if (btnStartGame) btnStartGame.disabled = !state.isHost;
-    if (btnNewGame)   btnNewGame.disabled   = !state.isHost;
+
+    // disable/enable inputs inside settings panel as well
+    applySettingsHostMode(state.isHost);
 
     //Pakt de benodigde DOM-elementen: de UL-lijst, het <template> voor één speler, en de roomcode-weergave. Haalt ook state op om host/zelf te kennen.
     const list = document.getElementById("playerList");
@@ -75,20 +116,40 @@ export function renderPlayersFromSnapshot(snap) {
     // als players ontbreekt, stop hier (geen crash / geen oude lijst)
     if (!snap?.players) return;
 
-    //zonder lijst, template of spelers: stop. --> maakt de huidige playerlist leeg
-    if (!list || !tpl || !snap?.players) return;
-    list.innerHTML = "";
+    const players = [...snap.players];
+    players.sort((a, b) => {
+        if (a.id === snap.hostId && b.id !== snap.hostId) return -1;
+        if (b.id === snap.hostId && a.id !== snap.hostId) return 1;
+        const me = getState().clientId;
+        if (a.id === me && b.id !== me) return -1;
+        if (b.id === me && a.id !== me) return 1;
+        return a.name.localeCompare(b.name);
+    });
 
-    for (const p of snap.players) { // voor elke speler in de players list van het snapshot object
+    for (const p of players) { // voor elke speler in de players list van het snapshot object
         const li = tpl.content.firstElementChild.cloneNode(true); //Clone de template-inhoud en maak er een echte LI van
         li.dataset.playerId = p.id;                                     //Bewaar playerId op het element via data-player-id (handig voor later: kick, highlight, etc.)
-        li.querySelector(".js-name").textContent = p.name;
-        li.querySelector(".js-role").textContent = (p.id === snap.hostId ? "host" : "player");
+
+        // --- mini patch: host markeren + eigen naam vet (via CSS) ---
+        const nameEl = li.querySelector(".js-name");
+        const roleEl = li.querySelector(".js-role");
+        const btnKick = li.querySelector(".js-kick");
+
+        const isHostPlayer = p.id === snap.hostId;
+        roleEl.textContent = (isHostPlayer ? "host" : "player");
+
+        // naam invullen + 👑 bij host
+        nameEl.textContent = p.name + (isHostPlayer ? " 👑" : "");
+
+        // eigen item markeren voor CSS (maakt jouw naam vet via style.css)
+        if (p.id === state.clientId) {
+            li.setAttribute("aria-current", "true");
+        }
+        // --- einde mini patch ---
 
         //Kick verbergen voor niet-hosts en voor jezelf (je mag jezelf niet kicken).
-        const btnKick = li.querySelector(".js-kick");
         if (!state.isHost || p.id === state.clientId) btnKick.style.display = "none";
-        // else: add kick click handler later
+
         list.appendChild(li);
     }
 }

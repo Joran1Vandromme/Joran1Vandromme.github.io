@@ -20,15 +20,31 @@ export function send(type, data) {
 // nog geen open socket? maak een nieuwe. bestaat die wel al gebruik dan de bestaande
 export function openSocket(url = "ws://localhost:8080") {
 
+    let retryMs = 500;
+
     // Als er al een verbinding is (OPEN of CONNECTING), hergebruik die
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return ws;
 
     ws = new WebSocket(url); //creates websocket and starts connecting
 
     //eventlisteners
-    ws.onopen = () => console.log("WS open:", url);
-    ws.onclose = () => console.log("WS closed");
+    ws.onopen = () => {
+        console.log("WS open:", url);
+        retryMs = 500;
+        handlers.get("conn")?.({ connected: true });
+    };
+
+    ws.onclose = () => {
+        console.log("WS closed");
+        handlers.get("conn")?.({ connected: false });
+        // simple backoff reconnect
+        setTimeout(() => {
+            retryMs = Math.min(retryMs * 1.5, 5000);
+            openSocket(url);
+        }, retryMs);
+    };
     ws.onerror = (e) => console.log("WS error", e);
+
 
     //this runs for every time a message is recieved from the server
     // recieved message looks like: vb:  {"type":"room","data":{...}}

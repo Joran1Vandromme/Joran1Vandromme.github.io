@@ -6,6 +6,7 @@ export function initHome() {
     const roomInput = document.getElementById("room");
     const btnJoin   = document.getElementById("joinRoom");
     const btnMake   = document.getElementById("makeRoom");
+    if (!nameInput || !roomInput || !btnJoin || !btnMake) return
 
     //zet de join knop enkel op enabled als de roomInput exact 6 charachters is
     const enableJoin = () => btnJoin.disabled = roomInput.value.trim().length !== 6;

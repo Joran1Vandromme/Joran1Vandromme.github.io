@@ -1,70 +1,180 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Presi (MVP)</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="styles/style.css">
-    <script type="module" src="code/app/main.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Presi</title>
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
-<section id="screen-home">
-<h1>Presi — client</h1>
 
-<div>Connection: <span id="status">disconnected</span></div>
+<!-- HOME SCREEN -->
+<section id="screen-home" class="home-screen">
+    <div class="home-wrap">
+        <div class="home-title">Presi - Cardgame</div>
 
-<div class="row">
-    <input id="room" placeholder="room id (optional)" />
-    <input id ="playerName" placeholder="username"/>
-</div>
+        <input
+                id="playerName"
+                class="home-input"
+                placeholder="Fill in ur username"
+                autocomplete="off"
+        />
 
-<div class="row">
-    <button id="joinRoom" disabled>Join Room</button>
-    <button id="makeRoom" >Make Room</button>
-</div>
+        <input
+                id="room"
+                class="home-input"
+                placeholder="Enter your 6 charachter Room-code"
+                maxlength="6"
+                autocomplete="off"
+        />
 
-<pre id="out">Open the console (F12) to see raw messages too.</pre>
-
-<!-- Now we load external JS -->
-
+        <button id="makeRoom" class="home-btn">Create Room</button>
+        <button id="joinRoom" class="home-btn">Join Room</button>
+    </div>
 </section>
 
-<!-- LOBBY HTML -->
-<section id="screen-lobby" hidden>
-    <!-- Top bar: room code + connection status -->
-    <header id="topbar">
-        <h1>Lobby <span id="roomCode">———</span></h1>
-        <div id="connStatus">disconnected</div>
-    </header>
 
-    <!--functies die enkel de host moet kunnen -->
-    <section id="hostActions">
-        <button id="btnSettings" disabled>Game Settings</button>
-        <button id="btnStartGame" disabled>Start Game</button>
-        <button id="btnNewGame" disabled>New Game</button>
-    </section>
+<!-- LOBBY SCREEN -->
+<section id="screen-lobby" class="lobby-screen" hidden>
+    <!-- top row: status left + centered lobby code -->
+    <div class="lobby-top">
+        <div id="status" class="status-pill">disconnected</div>
+        <div class="lobby-code">Lobby <span id="roomCode">—</span></div>
+        <div></div> <!-- empty right cell to keep code perfectly centered -->
+    </div>
 
-    <!-- Player list -->
-    <section id="playersSection">
-        <h2>Players</h2>
-        <ul id="playerList" aria-live="polite">
-            <!-- hier renderen we spelers via js en de template hieronder-->
-        </ul>
-    </section>
+    <!-- title sits above the grid; buttons align with the list (not this title) -->
+    <h2 class="players-title">Players</h2>
 
-    <!-- Template for a player row (wordt gecloned met JS voor elke player) -->
+    <!-- two-column layout; left starts with the player list; right with the toolbar -->
+    <div class="lobby-grid">
+        <!-- LEFT COLUMN -->
+        <div class="lobby-left">
+            <!-- players list card -->
+            <ul id="playerList"></ul>
+
+            <div class="row">
+                <button id="btnLeave">Leave Lobby</button>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="lobby-right">
+            <div class="toolbar">
+                <button id="btnSettings" class="btn-settings">Game Settings</button>
+                <button id="btnStartGame" class="btn-start">Start Game</button>
+            </div>
+
+            <!-- light-blue settings window -->
+            <div id="settingsPanel" class="settings-panel" hidden>
+                <h3>Game Settings</h3>
+
+                <!-- Include Jokers -->
+                <div class="settings-row">
+                    <label>
+                        <input type="checkbox" id="optIncludeJokers">
+                        Include Jokers
+                    </label>
+                </div>
+
+                <!-- Amount of jokers (1..8) with datalist suggestions -->
+                <div class="settings-row">
+                    <label>
+                        Amount of jokers
+                        <select id="optJokerCount"></select>
+                    </label>
+                </div>
+
+                <!-- Amount of cards per value (3..8) -->
+                <div class="settings-row">
+                    <label>
+                        Amount per value
+                        <select id="optPerValueCount"></select>
+                    </label>
+                </div>
+
+                <!-- Amount needed for quartet (3..8, <= per value) -->
+                <div class="settings-row">
+                    <label>
+                        Quartet count
+                        <select id="optQuartetCount"></select>
+                    </label>
+                </div>
+
+                <!-- Time per turn (15..120; invalid → default 20) -->
+                <div class="settings-row">
+                    <label>
+                        Time per turn (sec)
+                        <select id="optTimePerTurn">
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="30">30</option>
+                            <option value="45">45</option>
+                            <option value="60">60</option>
+                            <option value="120">120</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- Allow 2's with joker and quartet -->
+                <div class="settings-row">
+                    <label>
+                        <input type="checkbox" id="optAllowTwosPower">
+                        Allow 2's with joker and quartet
+                    </label>
+                </div>
+
+                <!-- Go lower on 7 -->
+                <div class="settings-row">
+                    <label>
+                        <input type="checkbox" id="optGoLowerOnSeven" checked>
+                        Go lower on 7
+                    </label>
+                </div>
+
+                <!-- Card skin -->
+                <div class="settings-row">
+                    <label>
+                        Card skin
+                        <select id="optCardSkin">
+                            <option value="default">default</option>
+                            <option value="dark">dark</option>
+                            <option value="pastel">pastel</option>
+                            <option value="high-contrast">high-contrast</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- Player status skin -->
+                <div class="settings-row">
+                    <label>
+                        Player status skin
+                        <select id="optStatusSkin">
+                            <option value="default">default</option>
+                            <option value="minimal">minimal</option>
+                            <option value="badges">badges</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- template for one player -->
     <template id="tplPlayerRow">
-        <li class="player-row" data-player-id="">
-            <span class="js-name"></span>
-            <span class="js-role"></span>
-            <button class="js-kick">Kick</button>
+        <li>
+            <div class="row-left">
+                <span class="js-name">name</span>
+            </div>
+            <div class="row-right">
+                <span class="js-role">player</span>
+                <button class="js-kick">Kick</button>
+            </div>
         </li>
     </template>
-
-    <footer id="footer">
-        <button id="btnLeave">Leave Lobby</button>
-    </footer>
-
 </section>
+
+<script type="module" src="./code/app/main.js"></script>
 </body>
 </html>

@@ -1,41 +1,320 @@
-body {
-    font-family: system-ui, sans-serif;
-    max-width: 800px;
-    margin: 2rem auto;
-    padding: 0 1rem;
+/* ===== Theme variables (renamed for clarity) ===== */
+:root{
+    --appBg: #ffffff;
+    --appText: #0f172a;
+
+    --frameBorder: #67462b;          /* card/list outer border */
+    --shadow: 0 4px 12px rgba(0,0,0,.04);
+
+    --lobbyCodeBg: #e1d3b1;
+    --lobbyCodeBorder: #6e4525;
+
+    --statusBg: #000000;
+    --statusText: #76c85e;
+
+    --playersTitleColor: #4e311d;
+
+    --settingsBtnBg: #a9acae;
+    --settingsBtnBorder: #797f83;
+
+    --startBtnBg: #80a83d;
+    --startBtnBorder: #67462b;
+
+    --listRowBgOdd:  #806d5b;
+    --listRowBgEven: #e3d5b2;
+
+    --roleChipBg:  #baa36c;
+    --roleChipTxt: #334155;
+
+    --kickAccent: #812323;           /* border/tint base for kick */
+    --kickTxt:    #b91c1c;
+    --kickBg:     #81232314;          /* ~8% alpha */
+    --kickBgHover:#81232329;          /* ~16% alpha */
 }
 
-.row {
-    display: flex;
-    gap: .5rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
+* { box-sizing: border-box; }
+html,body { height: 100%; }
+
+html { background: #9cd57d; }          /* full-bleed page background */
+body{
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: var(--appText);
+    background: transparent;             /* html already paints the green */
+    margin: 0;                            /* remove the whitespace frame */
+    padding: 0;
+    max-width: none;                      /* allow full width */
 }
 
-button {
-    padding: .6rem .9rem;
-    border: 1px solid #ccc;
-    border-radius: .5rem;
+h1,h2,h3{ margin: .2rem 0 .8rem; }
+a{ color: inherit; }
+
+.row{ display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; padding-top:1rem; }
+
+button{
+    padding:.6rem .9rem;
+    border:1px solid #ccd1d7;
+    border-radius:.5rem;
+    background:#fff;
+    cursor:pointer;
+}
+button:disabled{ opacity:.55; cursor:not-allowed; }
+
+input{
+    padding:.5rem .6rem;
+    border:1px solid #ccd1d7;
+    border-radius:.4rem;
+    min-width: 10ch;
+    color: #4e311d;                           /* dark brown text */
+    text-align: center;
+    font-weight: 800;
+}
+
+[hidden]{ display:none !important; }
+
+#screen-home,
+#screen-lobby {
+    max-width: 1100px;   /* center the UI */
+    margin: 2rem auto;   /* top/bottom margin + center horizontally */
+    padding: 0 1rem;     /* left/right breathing room */
+}
+
+@media (max-width: 640px){
+    #screen-home,
+    #screen-lobby {
+        margin: 1rem auto;
+        padding: 0 .75rem;
+    }
+}
+
+/* ===== HOME (sketch style) ===== */
+
+
+.home-wrap{
+    max-width: 520px;
+    margin: 0 auto;
+    display: grid;
+    gap: 14px;                               /* spacing between bars */
+}
+
+/* Top brown bar */
+.home-title{
+    /*background: #8b5e3c;                     /* brown bar */
+    color: #4e311d;                           /* dark brown text */
+    text-align: center;
+    font-weight: 800;
+    padding: .9rem 1.2rem;
+    border-radius: 18px;
+    letter-spacing: .3px;
+    font-size: 2rem;
+
+}
+
+/* Brown input bars */
+.home-input{
+    background: #8b5e3c;
+    color: #21160f;                           /* very dark brown text */
+    border-radius: 18px;
+    border-color: #372b1b;
+    border-width: 3px;
+    padding: .9rem 1.1rem;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 3px 10px rgba(0,0,0,.06) inset;
+}
+.home-input::placeholder{
+    color: #a68367;                           /* pale sand text for placeholder */
+    opacity: 1;
+}
+.home-input:focus{
+    box-shadow:
+            0 0 0 3px rgba(78,49,29,.25),           /* soft focus ring */
+            0 3px 10px rgba(0,0,0,.06) inset;
+}
+
+/* Grey pill buttons */
+.home-btn{
+    background: #c9c9c9;                      /* light grey */
+    color: #222;
+    border: 3px solid #8a8a8a;                /* darker grey rim */
+    border-radius: 18px;
+    padding: .85rem 1rem;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0,0,0,.05);
     cursor: pointer;
 }
-
-#status {
-    font-weight: 600;
+.home-btn:hover{
+    filter: brightness(.97);
+}
+.home-btn:active{
+    transform: translateY(1px);
 }
 
-pre {
-    background: #111;
-    color: #0f0;
-    padding: 1rem;
-    border-radius: .5rem;
-    max-height: 50vh;
-    overflow: auto;
+/* Small screens */
+@media (max-width: 520px){
+    .home-screen{ padding: 1.6rem .9rem; }
+    .home-wrap{ gap: 12px; }
 }
 
-input {
-    padding: .5rem .6rem;
-    border: 1px solid #ccc;
-    border-radius: .4rem;
+/* ===== LOBBY ===== */
+
+/* Top line: status (left) + centered lobby code */
+
+
+.lobby-top{
+    display:grid;
+    grid-template-columns: 200px 1fr 200px;
+    align-items:center;
+    margin:.2rem 0 .8rem;
 }
 
-[hidden] {display: none}
+.status-pill{
+    display:inline-block;
+    background: var(--statusBg);
+    color: var(--statusText);
+    padding:.25rem .6rem;
+    border-radius:.4rem;
+    font-size:.9rem;
+}
+
+.lobby-code{
+    justify-self:center;
+    background: var(--lobbyCodeBg);
+    color: var(--frameBorder);
+    border:3px solid var(--lobbyCodeBorder);
+    padding:.4rem .9rem;
+    border-radius:.4rem;
+    font-weight:700;
+    letter-spacing:.5px;
+}
+
+/* Title above the grid so right toolbar aligns with the list top */
+.players-title{
+    color: var(--playersTitleColor);
+    font-weight:800;
+    margin:0 0 .6rem 0;
+}
+
+/* Two-column layout */
+.lobby-grid{
+    display:grid;
+    grid-template-columns: 320px minmax(340px, 1fr);
+    gap:1.25rem;
+    align-items:start;
+}
+
+/* ===== Player list card ===== */
+#playerList{
+    list-style:none;
+    margin:0;
+    padding:.25rem;
+    background: var(--frameBorder);     /* outer frame color */
+    border:5px solid var(--frameBorder);
+    border-radius:12px;
+    box-shadow: var(--shadow);
+    overflow:hidden;                    /* clip row backgrounds to rounded corners */
+}
+
+#playerList li{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;      /* name left, role/kick right */
+    gap:.75rem;
+    padding:.6rem .8rem;
+}
+
+#playerList li:nth-child(odd){  background: var(--listRowBgOdd);  }
+#playerList li:nth-child(even){ background: var(--listRowBgEven); }
+
+#playerList .js-name{
+    font-weight:500;
+    letter-spacing:.1px;
+}
+
+/* Make your own name bold (set by aria-current="true" in JS) */
+#playerList [aria-current="true"] .js-name{ font-weight:700; }
+
+/* Role chip */
+#playerList .js-role{
+    font-size:.85rem;
+    background: var(--roleChipBg);
+    color: var(--roleChipTxt);
+    padding:.15rem .5rem;
+    border-radius:999px;                 /* pill */
+    margin-right:.5rem;
+    text-transform:lowercase;
+}
+
+/* Kick button with subtle tinted background */
+#playerList .js-kick{
+    font-size:.8rem;
+    padding:.3rem .6rem;
+    border-radius:.4rem;
+    border:2px solid var(--kickAccent);
+    color: var(--kickTxt);
+    background: var(--kickBg);
+    cursor:pointer;
+}
+#playerList .js-kick:hover{ background: var(--kickBgHover); }
+
+/* ===== Right column ===== */
+
+/* Toolbar aligns with the top of the list */
+.toolbar{
+    display:flex;
+    gap:.8rem;
+    align-items:center;
+    margin-bottom:.75rem;
+}
+
+/* Big settings button (host-enabled) */
+.btn-settings{
+    flex:1;                               /* wide like your mock */
+    background: var(--settingsBtnBg);
+    border:3px solid var(--settingsBtnBorder);
+    color:#262b2e;
+    font-weight:600;
+    text-align:center;
+    border-radius:.6rem;
+}
+
+/* Start Game (host-enabled) */
+.btn-start{
+    background: var(--startBtnBg);
+    border:2px solid var(--startBtnBorder);
+    color:#0b3a1f;
+    font-weight:700;
+    border-radius:2rem;
+}
+
+/* Settings panel */
+.settings-panel{
+    background:#c1c5c6;                   /* “light blue” in your palette */
+    border:1px solid #c2c6c6;
+    border-radius:12px;
+    padding:1rem;
+    min-height:220px;
+    box-shadow: var(--shadow);
+}
+.settings-panel h3{ margin-top:0; margin-bottom:.75rem; }
+.settings-row{ margin-bottom:.75rem; }
+.settings-row label{ display:flex; gap:.6rem; align-items:center; }
+
+/* ===== Leave Lobby button ===== */
+#btnLeave{
+    background:#fff;
+    border:2px solid var(--frameBorder);
+    color: var(--playersTitleColor);
+    font-weight:600;
+    border-radius:.6rem;
+}
+#btnLeave:hover{
+    background: var(--lobbyCodeBg);       /* soft tint on hover */
+}
+
+/* ===== Small screens ===== */
+@media (max-width: 800px){
+    .lobby-grid{ grid-template-columns: 1fr; }
+    .toolbar{ flex-direction:column; align-items:stretch; }
+    .lobby-top{ grid-template-columns: 1fr; gap:.5rem; }
+    .lobby-code{ justify-self:start; }
+}

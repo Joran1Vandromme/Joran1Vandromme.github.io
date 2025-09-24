@@ -6,14 +6,25 @@ mogelijk type bericht van de server.
 
  */
 
-import { setState } from "./state.js"; //zodat we de state van kunnen veranderen en UI refresh triggeren
+import { setState, getState } from "./state.js"; //zodat we de state van kunnen veranderen en UI refresh triggeren
+import { refreshSettingsUI, applySettingsHostMode } from "./screens/settings.js";
 import { showScreen } from "./router.js"; //nodig om te wisselen tussen lobby en home section
 import { on } from "./socket.js";
 import { renderPlayersFromSnapshot } from "./screens/lobby.js";
 
 export function registerMessageHandlers() {
     // als we van de server een bericht met type: clientId krijgen. --> haal clientId uit data en geef mee aan de state
-    on("clientId", ({ clientId }) => setState({ clientId }));
+    on("clientId", ({ clientId }) => {
+        setState({ clientId }); // your existing code
+
+        const s = getState();
+        if (s.roomId && s.name) {
+            // Try to rejoin the last known room with the same name.
+            // - If the server didn’t restart: you’ll rejoin fine (as a player).
+            // - If the server restarted: you'll receive error:room_not_found and remain on your current screen.
+            send("joinRoom", { roomId: s.roomId, name: s.name });
+        }
+    });
 
     // als we van de server een bericht met type: roomCreated. --> zet deze speler als host, bewaar de meegegeven roomId, zet phase naar lobby en toon de lobby html section
     on("roomCreated", ({ roomId }) => {
@@ -41,7 +52,19 @@ export function registerMessageHandlers() {
     dan zullen we met de functie renderFromSnapshot de spelerlijst opnieuw laden
      */
     on("room", (snapshot) => {
-        renderPlayersFromSnapshot(snapshot);
+        // update lokale state zodat isHost klopt bij host-wissel
+         const s = getState();
+         const iAmHost = snapshot.hostId === s.clientId;
+         // eigen naam uit snapshot bijwerken (optioneel maar handig)
+         const me = snapshot.players?.find(p => p.id === s.clientId);
+         setState({
+             isHost: iAmHost,
+             name: me?.name ?? s.name,
+             // roomId uit snapshot als “bron van waarheid”
+             roomId: snapshot.roomId
+         });
+          // daarna UI tekenen met de nieuwe state (host-knoppen worden correct ge-enable’d)
+         renderPlayersFromSnapshot(snapshot);
     });
 
     on("left", ({ roomId }) => {
@@ -57,6 +80,95 @@ export function registerMessageHandlers() {
         // (optioneel) alert("You were kicked from the lobby.");
     });
 
+    on("settings", ({ roomId, settings }) => {
+        // bewaar op de client; render UI accuraat voor host/non-host
+        setState({ settings });
+        refreshSettingsUI();
+    });
+
+    on("conn", ({ connected }) => {
+        // status pill
+        const el = document.getElementById("status");
+        if (el) {
+            el.textContent = connected ? "connected" : "disconnected";
+            el.style.background = connected ? "#2e7d32" : "#000";
+            el.style.color      = connected ? "#fff"     : "#76c85e";
+        }
+
+        const s = getState();
+
+        // HOME: disable Make/Join when offline (+ A: join needs 6 chars)
+        const btnMake   = document.getElementById("makeRoom");
+        const btnJoin   = document.getElementById("joinRoom");
+        const roomInput = document.getElementById("room");
+
+        if (btnMake) btnMake.disabled = !connected;
+
+        // helper so we can also call it from the input listener (B)
+        const updateJoinEnabled = () => {
+            if (!btnJoin) return;
+            const code = (roomInput?.value ?? "").trim();
+            const validCode = code.length === 6;     // rule: exactly 6 chars
+            // A: depends on connection AND validity
+            // B: this will be called on every input too
+            const isConnectedNow =
+                (document.getElementById("status")?.textContent === "connected");
+            btnJoin.disabled = !isConnectedNow || !validCode;
+        };
+
+        // initial apply for current conn state (A)
+        updateJoinEnabled();
+
+        // B: keep join disabled/enabled while typing; avoid duplicate listeners
+        if (roomInput && !roomInput.dataset.joinListenerAttached) {
+            roomInput.addEventListener("input", updateJoinEnabled);
+            roomInput.dataset.joinListenerAttached = "1";
+        }
+
+        // LOBBY:
+        // - Start Game disabled if offline or not host
+        const btnStart = document.getElementById("btnStartGame");
+        if (btnStart) btnStart.disabled = !connected || !s.isHost;
+
+        // - Keep Settings button enabled so everyone can view the panel,
+        //   but make the panel controls read-only when offline or non-host.
+        applySettingsHostMode(connected && s.isHost);
+        // ensure visible values are in sync after the toggle
+        refreshSettingsUI();
+
+        // - Disable Kick buttons when offline (host-only action)
+        const list = document.getElementById("playerList");
+        if (list) {
+            list.querySelectorAll(".js-kick").forEach(b => {
+                b.disabled = !connected || !s.isHost;
+            });
+        }
+    });
+
+
     // als we van de server een bericht met type: error --> error afhandeling
-    on("error", ({ reason }) => alert(`Error: ${reason || "unknown"}`));
+    on("error", ({ reason, max }) => {
+        if (reason === "room_full") {
+            alert(`Room is full. Maximum ${max ?? 8} players allowed.`);
+            return;
+        }
+        if (reason === "room_not_found") {
+            alert("Room not found.");
+            return;
+        }
+        if (reason === "bad_name") {
+            alert("Please enter a valid name.");
+            return;
+        }
+        if (reason === "not_host") {
+            alert("Only the host can do that.");
+            return;
+        }
+        if (reason === "player_not_in_room") {
+            alert("Player is no longer in the room.");
+            return;
+        }
+        // fallback
+        console.warn("Server error:", reason);
+    });
 }
