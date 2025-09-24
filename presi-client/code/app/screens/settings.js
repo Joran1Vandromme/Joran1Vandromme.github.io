@@ -141,8 +141,8 @@ export function initSettingsPanel() {
 
     // build select options
     fillRangeSelect(selJokers, 1, 8, DEFAULT_SETTINGS.jokerCount);               // 1..8 for jokers
-    fillRangeSelect(selPerVal, 3, 8, DEFAULT_SETTINGS.perValueCount);            // 3..8 per value
-    fillRangeSelect(selQuartet, 3, 8, DEFAULT_SETTINGS.perValueCount);           // 3..8 quartet
+    fillRangeSelect(selPerVal, 4, 8, DEFAULT_SETTINGS.perValueCount);            // 4..8 per value
+    fillRangeSelect(selQuartet, 4, 8, DEFAULT_SETTINGS.perValueCount);           // 4..8 quartet
 
     // listeners
     chkJokers?.addEventListener("change", () => {

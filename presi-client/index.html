@@ -85,7 +85,7 @@
                     </label>
                 </div>
 
-                <!-- Amount of cards per value (3..8) -->
+                <!-- Amount of cards per value (4..8) -->
                 <div class="settings-row">
                     <label>
                         Amount per value
@@ -138,9 +138,7 @@
                         Card skin
                         <select id="optCardSkin">
                             <option value="default">default</option>
-                            <option value="dark">dark</option>
-                            <option value="pastel">pastel</option>
-                            <option value="high-contrast">high-contrast</option>
+
                         </select>
                     </label>
                 </div>
@@ -151,8 +149,7 @@
                         Player status skin
                         <select id="optStatusSkin">
                             <option value="default">default</option>
-                            <option value="minimal">minimal</option>
-                            <option value="badges">badges</option>
+
                         </select>
                     </label>
                 </div>
@@ -173,6 +170,34 @@
             </div>
         </li>
     </template>
+</section>
+<section id="screen-game" hidden>
+    <header class="game-header">
+        <span id="gameRoomCode"></span>
+        <span id="roleBadge" class="pill"></span>
+        <span id="turnIndicator" class="pill"></span>
+    </header>
+
+    <main class="game-area">
+        <div class="pile">
+            <h3>Center Pile</h3>
+            <div id="pileCards" class="pile-cards"></div>
+        </div>
+
+        <aside class="sidebar">
+            <h3>Players</h3>
+            <ul id="othersList" class="players"></ul>
+        </aside>
+    </main>
+
+    <footer class="hand-area">
+        <div id="yourHand" class="hand"></div>
+        <div class="hand-actions">
+            <button id="btnPlay" disabled>Play</button>
+            <button id="btnPass" disabled>Pass</button>
+            <button id="btnQuartet">Quartet!</button>
+        </div>
+    </footer>
 </section>
 
 <script type="module" src="./code/app/main.js"></script>

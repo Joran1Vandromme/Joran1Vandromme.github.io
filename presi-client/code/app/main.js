@@ -4,6 +4,8 @@ import { showScreen } from "./router.js";
 import { subscribe } from "./state.js";
 import { initHome } from "./screens/home.js";
 import { initLobby } from "./screens/lobby.js";
+import { initGame } from "./screens/game.js";
+
 
 window.addEventListener("load", () => {
 
@@ -11,6 +13,7 @@ window.addEventListener("load", () => {
     openSocket(); //open de socket als die nog niet open is
     initHome();
     initLobby();
+    initGame();
 
     // keep simple: show home by default; lobby shown by message handlers
     showScreen("screen-home");

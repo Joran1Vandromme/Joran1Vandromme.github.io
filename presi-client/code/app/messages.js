@@ -11,6 +11,7 @@ import { refreshSettingsUI, applySettingsHostMode } from "./screens/settings.js"
 import { showScreen } from "./router.js"; //nodig om te wisselen tussen lobby en home section
 import { on } from "./socket.js";
 import { renderPlayersFromSnapshot } from "./screens/lobby.js";
+import { renderGameFromSnapshot } from "./screens/game.js";
 
 export function registerMessageHandlers() {
     // als we van de server een bericht met type: clientId krijgen. --> haal clientId uit data en geef mee aan de state
@@ -143,6 +144,17 @@ export function registerMessageHandlers() {
                 b.disabled = !connected || !s.isHost;
             });
         }
+    });
+
+    on("gameStarted", (snap) => {
+        setState({ phase: "playing" });
+        showScreen("screen-game");
+        renderGameFromSnapshot(snap);
+    });
+
+    on("game", (snap) => {
+        // generic game-state update
+        renderGameFromSnapshot(snap);
     });
 
 

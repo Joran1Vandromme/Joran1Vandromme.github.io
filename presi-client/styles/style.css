@@ -318,3 +318,138 @@ input{
     .lobby-top{ grid-template-columns: 1fr; gap:.5rem; }
     .lobby-code{ justify-self:start; }
 }
+
+/*---------------------------------------------*/
+/*---------------------GAME SCREEN------------------------*/
+/*---------------------------------------------*/
+
+#screen-game { max-width: 1200px; margin: 0 auto; }
+.game-header { display:flex; gap:8px; align-items:center; justify-content:space-between; margin: 12px 0; }
+.pill { padding:4px 10px; border-radius:999px; background:#2e7d32; color:#fff; font-size:12px; }
+.game-area { display:grid; grid-template-columns: 1fr 280px; gap:16px; min-height: 40vh; }
+.pile-cards { display:flex; flex-wrap:wrap; gap:8px; align-items:flex-end; min-height:76px; }
+.hand-area { margin-top: 16px; }
+.hand { display:flex; gap:8px; flex-wrap:wrap; padding:10px; background:#143d14; border-radius:12px; }
+.card { width:56px; height:76px; border-radius:8px; border:1px solid rgba(255,255,255,.2); background:#fff; display:inline-flex; align-items:center; justify-content:center; font-weight:700; cursor:pointer; transition: transform .18s ease, box-shadow .18s ease, opacity .18s; }
+.card {
+    background: white;         /* your base card color */
+    border: none;              /* remove button border */
+    outline: none;             /* no focus ring */
+    box-shadow: 0 0 4px rgba(0,0,0,0.25);
+    cursor: pointer;           /* keep pointer on hover */
+}
+
+/* Prevent color shift on click */
+.card:active,
+.card:focus {
+    background: white;
+    outline: none;
+    box-shadow: 0 0 6px rgba(0,0,0,0.4); /* optional pressed look */
+}
+
+.card.selected { transform: translateY(-12px); box-shadow:0 8px 20px rgba(0,0,0,.35); }
+.players { list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:6px; }
+.players li[aria-current="true"] { font-weight:700; }
+.shake { animation: shake .3s linear; }
+@keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+
+
+/* Custom white circle cursor */
+/* Hand highlight only (do NOT color cards) */
+#yourHand.dragging {
+    background: #1b4d1b;
+    box-shadow: inset 0 0 8px rgba(255,255,255,0.3);
+}
+
+/* Custom white-circle cursor for container AND cards while dragging */
+#yourHand.dragging,
+#yourHand.dragging .card {
+    cursor: url("data:image/svg+xml;utf8,\
+    <svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'>\
+      <circle cx='16' cy='16' r='6' fill='cyan' />\
+    </svg>") 16 16, auto !important;
+    user-select: none;
+    -webkit-user-drag: none;
+}
+#yourHand {
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+/* Hand highlight when it's YOUR turn */
+#yourHand.your-turn {
+    background: #ffec99;   /* honey yellow */
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.25);
+    transition: background 0.2s;
+}
+
+/* Player list highlight when it's THEIR turn */
+#othersList li.their-turn {
+    border: 2px solid #ffec99;
+    border-radius: 8px;
+    padding: 2px 4px;
+    background: rgba(255,236,153,0.2); /* faint honey fill */
+}
+/* Player list container */
+#othersList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* Player row card */
+#othersList li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(2px);
+    color: #fff;
+}
+
+/* Name on the left, count on the right (optional utility) */
+#othersList li .name { font-weight: 600; }
+#othersList li .count { opacity: 0.85; font-variant-numeric: tabular-nums; }
+
+/* Subtle hover */
+#othersList li:hover {
+    background: rgba(255,255,255,0.10);
+}
+
+/* Active player's turn highlight */
+#othersList li.their-turn {
+    border: 2px solid #ffec99;               /* honey border */
+    background: rgba(255,236,153,0.20);       /* faint honey fill */
+    box-shadow: 0 0 0 3px rgba(255,236,153,0.12); /* soft outer glow */
+}
+
+/* Your own entry if ever displayed here (keeps it distinct) */
+#othersList li[aria-current="true"] {
+    outline: 1px dashed rgba(255,255,255,0.25);
+}
+
+#othersList li .name {
+    font-weight: 600;
+}
+#othersList li .name:has(+ .count)::after {
+    /* nothing extra here, but keeping selector for future badges */
+}
+
+/* Make the “[you]” label slightly dimmer so it reads like a tag */
+#othersList li:last-child .name {
+    opacity: 0.95;
+}
