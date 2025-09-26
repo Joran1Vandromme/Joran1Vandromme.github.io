@@ -1,8 +1,10 @@
+
 // code/app/screens/game.js
 import { send } from "../socket.js";
 import { getState, setState } from "../state.js";
 
 let badQuartetClicks = 0;
+let selSeqCounter = 1;
 
 /* =========================
    Rank / Suit helpers
@@ -64,7 +66,15 @@ export function initGame() {
             if (suppressClick) { e.preventDefault(); return; }
             const btn = e.target.closest(".card");
             if (!btn) return;
-            btn.classList.toggle("selected");
+
+            if (btn.classList.contains("selected")) {
+                btn.classList.remove("selected");
+                delete btn.dataset.selSeq;           // 👈 clear selection order
+            } else {
+                btn.classList.add("selected");
+                btn.dataset.selSeq = String(selSeqCounter++); // 👈 assign next order
+            }
+
             updatePlayEnabled();
         });
 
@@ -74,8 +84,17 @@ export function initGame() {
 
         function applyDrag(card) {
             if (!card) return;
-            if (dragMode === "add")   card.classList.add("selected");
-            else                      card.classList.remove("selected");
+            if (dragMode === "add") {
+                if (!card.classList.contains("selected")) {
+                    card.classList.add("selected");
+                    card.dataset.selSeq = String(selSeqCounter++);
+                }
+            } else {
+                if (card.classList.contains("selected")) {
+                    card.classList.remove("selected");
+                    delete card.dataset.selSeq;
+                }
+            }
             updatePlayEnabled();
         }
 
@@ -161,8 +180,17 @@ export function initGame() {
    ========================= */
 
 function selectedHandIds() {
-    return [...document.querySelectorAll("#yourHand .card.selected")]
-        .map(el => el.dataset.id);
+    const nodes = [...document.querySelectorAll("#yourHand .card.selected")];
+    nodes.sort((a,b) => Number(a.dataset.selSeq||0) - Number(b.dataset.selSeq||0));
+    return nodes.map(el => el.dataset.id);
+}
+
+function resetSelectionOrder() {
+    selSeqCounter = 1;
+    document.querySelectorAll("#yourHand .card.selected").forEach(el => {
+        el.classList.remove("selected");
+        delete el.dataset.selSeq;
+    });
 }
 
 function clearSelection() {
@@ -227,6 +255,8 @@ export function renderGameFromSnapshot(snap) {
         if (snap.turn?.youCanAct) hand.classList.add("your-turn");
         else hand.classList.remove("your-turn");
     }
+    resetSelectionOrder();
+
 
     // Player list (order = players after ME, wrapping; [you] always last)
     const ul = document.getElementById("othersList");
@@ -234,8 +264,10 @@ export function renderGameFromSnapshot(snap) {
         ul.innerHTML = "";
 
         const me        = snap.you?.id || getState().clientId;
-        const currentId = snap.turn?.current;
         const order     = (snap.turn?.order || []).slice();
+        const idx       = Number(snap.turn?.index ?? 0);
+        const currentId = snap.turn?.current ?? (order.length ? order[(idx % order.length + order.length) % order.length] : null);
+
 
         // Build lookup for names/sizes (others + you)
         const nameById = new Map();

@@ -174,7 +174,7 @@ export function initSettingsPanel() {
     selQuartet?.addEventListener("change", () => {
         let q = Number(selQuartet.value);
         const perVal = Number(selPerVal?.value || DEFAULT_SETTINGS.perValueCount);
-        q = Math.max(3, Math.min(perVal, q));
+        q = Math.max(4, Math.min(perVal, q));
         const next = patchSettings({ quartetCount: q });
         if (getState().isHost) send("updateSettings", { settings: { quartetCount: next.quartetCount }});
         selQuartet.value = String(next.quartetCount);

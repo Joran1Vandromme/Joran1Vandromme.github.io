@@ -32,35 +32,22 @@ export function initLobby(){
     }
 
     // Start Game (voor nu placeholder)
+    // Start Game
     const btnStart = document.getElementById("btnStartGame");
     if (btnStart) {
         btnStart.addEventListener("click", () => {
             const s = getState();
             if (!s.isHost) return;
-                     // guard: require at least 3 players before starting
-                const count = document.getElementById("playerList")?.children.length || 0;
-                if (count < 3) {
-                    alert("Need at least 3 players in the lobby to start the game.");
-                    return;
-                }
-            // TODO: implement start game flow (will include sending settings)
-            // Start Game (voor nu placeholder)
-            const btnStart = document.getElementById("btnStartGame");
-            if (btnStart) {
-                btnStart.addEventListener("click", () => {
-                    const s = getState();
-                    if (!s.isHost) return;
 
-                    // guard: require at least 3 players before starting
-                    const count = document.getElementById("playerList")?.children.length || 0;
-                    if (count < 3) {
-                        alert("Need at least 3 players in the lobby to start the game.");
-                        return;
-                    }
-                    // NEW: ask server to start
-                    send("startGame", { roomId: s.roomId });
-                });
+            // require at least 3 players
+            const count = document.getElementById("playerList")?.children.length || 0;
+            if (count < 3) {
+                alert("Need at least 3 players in the lobby to start the game.");
+                return;
             }
+
+            // ask server to start
+            send("startGame", { roomId: s.roomId });
         });
     }
 
