@@ -5,6 +5,7 @@ import { getState, setState } from "../state.js";
 
 let badQuartetClicks = 0;
 let selSeqCounter = 1;
+let _timerInterval = null;
 
 /* =========================
    Rank / Suit helpers
@@ -257,7 +258,6 @@ export function renderGameFromSnapshot(snap) {
     }
     resetSelectionOrder();
 
-
     // Player list (order = players after ME, wrapping; [you] always last)
     const ul = document.getElementById("othersList");
     if (ul) {
@@ -268,12 +268,12 @@ export function renderGameFromSnapshot(snap) {
         const idx       = Number(snap.turn?.index ?? 0);
         const currentId = snap.turn?.current ?? (order.length ? order[(idx % order.length + order.length) % order.length] : null);
 
-
         // Build lookup for names/sizes (others + you)
         const nameById = new Map();
         const sizeById = new Map();
         for (const p of (snap.others || [])) {
             nameById.set(p.id, p.name ?? p.id);
+            // FIX: use server-provided handSize; remove stray g.* reference
             sizeById.set(p.id, p.handSize ?? 0);
         }
         nameById.set(me, snap.you?.name ?? "You");
@@ -287,7 +287,6 @@ export function renderGameFromSnapshot(snap) {
                 orderedOthers.push(order[(meIdx + i) % order.length]);
             }
         } else {
-            // Fallback if no order provided yet
             for (const p of (snap.others || [])) orderedOthers.push(p.id);
         }
 
@@ -334,10 +333,19 @@ export function renderGameFromSnapshot(snap) {
         ul.appendChild(meLi);
     }
 
+    // ⏱️ Turn timer UI (show/hide + progress)
+    if (snap?.timer?.deadline && snap?.turn) {
+        updateTurnTimerUI(snap);
+    } else if (typeof stopTurnTimerUI === "function") {
+        // defensively hide/stop if no timer in the snapshot
+        stopTurnTimerUI();
+    }
+
     // Make sure interactions are wired and buttons reflect state
     initGame();
     updatePlayEnabled();
 }
+
 
 /* =========================
    Card element builder
@@ -352,3 +360,83 @@ function cardEl(cardId) {
     btn.textContent = suit ? `${face} ${suitSymbol(suit)}` : face;
     return btn;
 }
+
+
+//==========================
+// Time remaining bar
+//==========================
+function _msLeft(deadlineMs) {
+    return Math.max(0, Number(deadlineMs || 0) - Date.now());
+}
+
+function _fmtSeconds(ms) {
+    const s = Math.ceil(ms / 1000);
+    return `${s}s`;
+}
+
+function stopTurnTimerUI() {
+    if (_timerInterval) {
+        clearInterval(_timerInterval);
+        _timerInterval = null;
+    }
+    const wrap = document.getElementById("turnTimer");
+    const fill = document.querySelector(".turn-timer__fill");
+    const label = document.getElementById("turnTimerLabel");
+    if (wrap) wrap.hidden = true;
+    if (fill) fill.style.width = "0%";
+    if (label) label.textContent = "—";
+}
+
+/**
+ * Update + animate the timer bar.
+ * @param {object} snap - game snapshot
+ *   expects: snap.timer.deadline (ms epoch) and snap.rules.timePerTurn (s)
+ */
+function updateTurnTimerUI(snap) {
+    const wrap  = document.getElementById("turnTimer");
+    const fill  = document.querySelector(".turn-timer__fill");
+    const label = document.getElementById("turnTimerLabel");
+    if (!wrap || !fill || !label) return;
+
+    const youCanAct = !!snap?.turn?.youCanAct;
+
+    const deadline  = Number(snap?.timer?.deadline || 0);
+    const startedAt = Number(snap?.timer?.startedAt || 0);
+
+    // Strict check: if missing or invalid, hide
+    if (!deadline || !startedAt || deadline <= startedAt) {
+        stopTurnTimerUI();
+        return;
+    }
+
+    const totalMs = deadline - startedAt;
+
+
+    wrap.hidden = false;
+    wrap.classList.toggle("paused", !youCanAct);
+
+    // Clear previous loop
+    if (_timerInterval) {
+        clearInterval(_timerInterval);
+        _timerInterval = null;
+    }
+
+    const tick = () => {
+        const now  = Date.now();
+        const left = Math.max(0, deadline - now);
+        const ratio = Math.min(1, Math.max(0, left / totalMs));
+        fill.style.width = `${Math.round(ratio * 100)}%`;
+        label.textContent = youCanAct ? `${Math.ceil(left / 1000)}s` : "waiting…";
+
+        if (left <= 0) {
+            fill.style.width = "0%";
+            label.textContent = youCanAct ? "0s" : "waiting…";
+            clearInterval(_timerInterval);
+            _timerInterval = null;
+        }
+    };
+
+    tick();
+    _timerInterval = setInterval(tick, 100);
+}
+
