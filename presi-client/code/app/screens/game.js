@@ -291,6 +291,7 @@ export function renderGameFromSnapshot(snap) {
         }
 
         // Render opponents in that order
+        const passedSet = new Set(snap.passedPlayers || []);
         for (const pid of orderedOthers) {
             const li = document.createElement("li");
             li.setAttribute("role", "listitem");
@@ -298,12 +299,24 @@ export function renderGameFromSnapshot(snap) {
             const name  = document.createElement("span"); name.className = "name";
             const count = document.createElement("span"); count.className = "count";
             name.textContent  = nameById.get(pid) ?? pid;
-            count.textContent = sizeById.get(pid) ?? 0;
+
+            const handSize = sizeById.get(pid) ?? 0;
+            const isFinished = handSize === 0;
+            const hasPassed  = passedSet.has(pid) && !isFinished;
+
+            if (isFinished) {
+                li.classList.add("player-finished");
+                count.textContent = "cleared"; // single-word status
+            } else if (hasPassed) {
+                li.classList.add("player-passed");
+                count.textContent = `passed(${handSize})`;
+            } else {
+                count.textContent = handSize;
+            }
 
             li.appendChild(name);
             li.appendChild(count);
 
-            // Highlight whoever's turn it is
             if (pid === currentId) {
                 li.classList.add("their-turn");
                 li.setAttribute("aria-live", "polite");
@@ -311,6 +324,7 @@ export function renderGameFromSnapshot(snap) {
 
             ul.appendChild(li);
         }
+
 
         // Append [you] as fixed last row; highlight if it's your turn
         const meLi   = document.createElement("li");
@@ -320,7 +334,20 @@ export function renderGameFromSnapshot(snap) {
         const meName = document.createElement("span"); meName.className = "name";
         const meCnt  = document.createElement("span"); meCnt.className  = "count";
         meName.textContent = `${nameById.get(me) ?? "You"} [you]`;
-        meCnt.textContent  = sizeById.get(me) ?? 0;
+
+        const meHandSize = sizeById.get(me) ?? 0;
+        const meFinished = meHandSize === 0;
+        const mePassed   = passedSet.has(me) && !meFinished;
+
+        if (meFinished) {
+            meLi.classList.add("player-finished");
+            meCnt.textContent = "cleared";
+        } else if (mePassed) {
+            meLi.classList.add("player-passed");
+            meCnt.textContent = `passed(${meHandSize})`;
+        } else {
+            meCnt.textContent = meHandSize;
+        }
 
         meLi.appendChild(meName);
         meLi.appendChild(meCnt);
@@ -331,6 +358,7 @@ export function renderGameFromSnapshot(snap) {
         }
 
         ul.appendChild(meLi);
+
     }
 
     // ⏱️ Turn timer UI (show/hide + progress)
