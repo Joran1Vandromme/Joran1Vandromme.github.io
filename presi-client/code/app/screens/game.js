@@ -236,14 +236,57 @@ export function renderGameFromSnapshot(snap) {
     if (roleBadge) roleBadge.textContent = (snap.you?.role || "burger");
     if (turnInd)   turnInd.textContent = snap.turn?.youCanAct ? "Your turn" : "Waiting…";
 
-    // Pile (keep order as played)
-    const pile = document.getElementById("pileCards");
-    if (pile) {
-        pile.innerHTML = "";
-        for (const id of (snap.pile?.ordered || [])) {
-            pile.appendChild(cardEl(id));
+    // Pile rendering: current slag + history
+    // Pile rendering: show last play big + 3 previous plays small (per-move)
+    const pileCurrent = document.getElementById("pileCurrent");
+    const pileHistory = document.getElementById("pileHistory");
+
+    if (pileCurrent) {
+        pileCurrent.innerHTML = "";
+
+        // Prefer per-move 'current'; fallback to whole pile (old)
+        const currentMove = (snap.moves?.current && Array.isArray(snap.moves.current))
+            ? snap.moves.current
+            : (snap.pile?.ordered || []); // fallback
+
+        for (const id of currentMove) {
+            pileCurrent.appendChild(cardEl(id));
         }
     }
+
+    if (pileHistory) {
+        pileHistory.innerHTML = "";
+
+        // Prefer per-move 'history' (array of arrays). Fallback to per-slag history (older code).
+        if (Array.isArray(snap.moves?.history)) {
+            // Only keep the last 2 moves
+            const lastTwo = snap.moves.history.slice(-2);
+            for (const move of lastTwo) {
+                const row = document.createElement("div");
+                row.className = "slag-history";
+                for (const id of move) {
+                    const el = cardEl(id);
+                    el.classList.add("small");
+                    row.appendChild(el);
+                }
+                pileHistory.appendChild(row);
+            }
+        } else {
+            // Fallback: render per-slag history (each slag is many moves flattened)
+            for (const slag of (snap.pileHistory || [])) {
+                const row = document.createElement("div");
+                row.className = "slag-history";
+                for (const id of (Array.isArray(slag) ? slag : [])) {
+                    const el = cardEl(id);
+                    el.classList.add("small");
+                    row.appendChild(el);
+                }
+                pileHistory.appendChild(row);
+            }
+        }
+    }
+
+
 
     // Your hand (sorted) + highlight if it's your turn
     const hand = document.getElementById("yourHand");

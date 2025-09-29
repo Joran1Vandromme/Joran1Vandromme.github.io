@@ -179,9 +179,12 @@
     </header>
 
     <main class="game-area">
-        <div class="pile">
+        <div id="pileArea" class="pile">
             <h3>Center Pile</h3>
-            <div id="pileCards" class="pile-cards"></div>
+            <!-- Smaller history slagen go here (top, faded) -->
+            <div id="pileHistory" class="pile-history"></div>
+            <!-- Current slag goes here (big, centered) -->
+            <div id="pileCurrent" class="pile-current"></div>
         </div>
 
         <aside class="sidebar">
@@ -207,6 +210,7 @@
         </div>
     </footer>
 </section>
+
 
 <script type="module" src="./code/app/main.js"></script>
 </body>
