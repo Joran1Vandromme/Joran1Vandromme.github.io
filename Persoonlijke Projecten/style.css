@@ -1,0 +1,56 @@
+/* projecten.css */
+
+/* Layout voor de projectenpagina */
+main {
+    width: min(1100px, 92vw);
+    margin-top: 3rem;
+}
+
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+}
+
+/* Kleurrijke variant voor ALLE projectknoppen */
+.btn-colorful {
+    background: linear-gradient(135deg, #ff6a00, #ffb347, #ff4081);
+    color: #fff;
+    text-align: center;
+    padding: 1.25rem 1.75rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 2rem;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s, filter .2s;
+}
+
+.btn-colorful:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 18px rgba(0,0,0,.15);
+    filter: saturate(1.15);
+}
+
+/* Terug-knop in sobere stijl die past bij je palet */
+.back {
+    margin-top: 3rem;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-outline {
+    text-decoration: none;
+    padding: 0.9rem 1.4rem;
+    border-radius: 10px;
+    border: 2px solid #34495e;
+    color: #34495e;
+    font-weight: 600;
+    transition: background-color .2s, color .2s, transform .2s;
+}
+
+.btn-outline:hover {
+    background-color: #34495e;
+    color: #fff;
+    transform: translateY(-2px);
+}

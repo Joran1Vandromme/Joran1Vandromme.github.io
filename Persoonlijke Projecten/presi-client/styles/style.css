@@ -726,3 +726,16 @@ input{
 }
 
 /* keep your existing .player-passed style */
+
+
+.noServerOnlineVraagJoran{
+    color: #0b3a1f;
+    font-style: italic;      /* cursief */
+    text-align: center;      /* horizontaal in het midden */
+    display: flex;
+    align-items: center;
+
+    /* 👇 Deze regel aanpassen om tekstgrootte te veranderen */
+    font-size: 0.7rem;
+
+}
