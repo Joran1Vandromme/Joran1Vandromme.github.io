@@ -12,6 +12,8 @@ import { showScreen } from "./router.js"; //nodig om te wisselen tussen lobby en
 import { on } from "./socket.js";
 import { renderPlayersFromSnapshot } from "./screens/lobby.js";
 import { renderGameFromSnapshot } from "./screens/game.js";
+import { showSlagPopup } from "./screens/game.js"; // make sure path matches your layout
+
 
 export function registerMessageHandlers() {
     // als we van de server een bericht met type: clientId krijgen. --> haal clientId uit data en geef mee aan de state
@@ -155,6 +157,11 @@ export function registerMessageHandlers() {
     on("game", (snap) => {
         // generic game-state update
         renderGameFromSnapshot(snap);
+    });
+
+    on("slagWon", (data) => {
+        // data: { type, byId, byName, cards, value? }
+        showSlagPopup(data);
     });
 
 

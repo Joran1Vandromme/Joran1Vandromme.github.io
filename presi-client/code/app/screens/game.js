@@ -7,6 +7,8 @@ let badQuartetClicks = 0;
 let selSeqCounter = 1;
 let _timerInterval = null;
 
+let _slagPopupTimeout = null;
+
 /* =========================
    Rank / Suit helpers
    ========================= */
@@ -32,6 +34,21 @@ function suitSymbol(code) {
     }
 }
 
+function roleToLabel(role) {
+    switch (role) {
+        case "president": return "President";
+        case "vp":        return "Vice-President";
+        case "burger":    return "Citizen";
+        case "viceshit":  return "Vice-Shit";
+        case "supershit": return "Super-Shit";
+        default:          return role || "—";
+    }
+}
+function roleToClass(role) {
+    return `role-${role || "burger"}`; // e.g. role-president
+}
+
+
 // Robust parser: rank is (10|2..9|J|Q|K|1); suit is C/D/H/S/V1..V4
 function parseId(id) {
     if (id.startsWith("JK")) return { rank: "JK" };
@@ -41,6 +58,51 @@ function parseId(id) {
     if (rank === "A") rank = "1"; // safety
     const suit = m[2];
     return { rank, suit };
+}
+
+export function showSlagPopup({ type, byName, cards = [], value }) {
+    let msg = "";
+    if (type === "quartet") {
+        msg = `Quartet${value ? " (" + value + ")" : ""} by ${byName}!`;
+    } else if (type === "joker") {
+        msg = `Joker played by ${byName}!`;
+    } else {
+        msg = `${byName} won the slag!`;
+    }
+
+    // container (create once)
+    let wrap = document.getElementById("slagWinPopup");
+    if (!wrap) {
+        wrap = document.createElement("div");
+        wrap.id = "slagWinPopup";
+        wrap.className = "slag-win-popup";
+        document.body.appendChild(wrap);
+    }
+
+    // build content
+    wrap.innerHTML = "";
+    const text = document.createElement("div");
+    text.className = "slag-win-popup__text";
+    text.textContent = msg;
+
+    const row = document.createElement("div");
+    row.className = "slag-win-popup__cards";
+    for (const id of cards) {
+        const el = cardEl(id);
+        el.classList.add("small"); // reuse your small style
+        row.appendChild(el);
+    }
+
+    wrap.appendChild(text);
+    if (cards.length) wrap.appendChild(row);
+
+    wrap.classList.add("show");
+
+    // auto-hide
+    if (_slagPopupTimeout) clearTimeout(_slagPopupTimeout);
+    _slagPopupTimeout = setTimeout(() => {
+        wrap.classList.remove("show");
+    }, 2200);
 }
 
 function sortCardIds(ids) {
@@ -236,6 +298,30 @@ export function renderGameFromSnapshot(snap) {
     if (roleBadge) roleBadge.textContent = (snap.you?.role || "burger");
     if (turnInd)   turnInd.textContent = snap.turn?.youCanAct ? "Your turn" : "Waiting…";
 
+    const opp = (snap.others || []).find(o => o.id === pid) || {};
+    const role = opp.role || "burger";
+    const isOffline = !!opp.offline;
+    const cnt = sizeById.get(pid) ?? 0;
+
+    // Count/status column
+    const count = document.createElement("span");
+    count.className = "count";
+
+    if (isOffline) {
+        count.textContent = "left";
+        li.classList.add("player-left");          // background styling
+    } else if (cnt === 0 && (snap.finished || []).includes?.(pid)) {
+        count.textContent = "out";
+        li.classList.add("player-cleared");
+    } else if ((snap.passedPlayers || []).includes?.(pid)) {
+        count.textContent = `passed (${cnt})`;
+        li.classList.add("player-passed");
+    } else {
+        count.textContent = String(cnt);
+    }
+
+
+
     // Pile rendering: current slag + history
     // Pile rendering: show last play big + 3 previous plays small (per-move)
     const pileCurrent = document.getElementById("pileCurrent");
@@ -357,8 +443,17 @@ export function renderGameFromSnapshot(snap) {
                 count.textContent = handSize;
             }
 
+            // role pill
+            const role = (snap.others?.find(o => o.id === pid)?.role) || "burger";
+            const pill = document.createElement("span");
+            pill.className = `role-pill ${roleToClass(role)}`;
+            pill.textContent = roleToLabel(role);
+
+        // order: Name • Role • Count
             li.appendChild(name);
+            li.appendChild(pill);
             li.appendChild(count);
+
 
             if (pid === currentId) {
                 li.classList.add("their-turn");
@@ -392,8 +487,15 @@ export function renderGameFromSnapshot(snap) {
             meCnt.textContent = meHandSize;
         }
 
+        const myRole = snap.you?.role || "burger";
+        const mePill = document.createElement("span");
+        mePill.className = `role-pill ${roleToClass(myRole)}`;
+        mePill.textContent = roleToLabel(myRole);
+
         meLi.appendChild(meName);
+        meLi.appendChild(mePill);
         meLi.appendChild(meCnt);
+
 
         if (currentId === me) {
             meLi.classList.add("their-turn");

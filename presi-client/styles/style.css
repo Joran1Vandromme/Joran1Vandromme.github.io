@@ -648,3 +648,81 @@ input{
     margin-left: 0;
 }
 
+/* Slag win popup */
+.slag-win-popup {
+    position: fixed;
+    left: 50%;
+    top: 18%;
+    transform: translateX(-50%);
+    background: rgba(20, 20, 20, 0.92);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 10px;
+    box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+}
+
+.slag-win-popup.show {
+    opacity: 1;
+}
+
+.slag-win-popup__text {
+    font-weight: 600;
+    margin-bottom: 6px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.slag-win-popup__cards {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+}
+
+.slag-win-popup__cards .card {
+    position: relative;
+    width: 44px;   /* same compact size you used for history */
+    height: 60px;
+    margin-left: -14px; /* overlap */
+}
+.slag-win-popup__cards .card:first-child {
+    margin-left: 0;
+}
+
+/* Role pill in player list */
+.role-pill {
+    display: inline-block;
+    margin-inline: 8px;
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 1.2;
+    border-radius: 999px;
+    background: #e9eef3;
+    color: #223;
+    vertical-align: middle;
+    user-select: none;
+}
+
+/* Role-specific accents */
+.role-president { background: #ffe8a3; color: #874800; }   /* gold-ish */
+.role-vp        { background: #e7f1ff; color: #003c8f; }   /* blue-ish */
+.role-burger    { background: #edf2f7; color: #2a2a2a; }   /* neutral */
+.role-viceshit  { background: #ffe0e0; color: #523318; }   /* red-ish */
+.role-supershit { background: #ffcdd2; color: #593112; }   /* darker red */
+
+
+
+.players li.player-left {
+    background: rgba(220, 53, 69, 0.18); /* soft red */
+    border-color: rgba(220, 53, 69, 0.35);
+}
+
+.players li.player-cleared {
+    background: rgba(25, 135, 84, 0.14);  /* soft green */
+    border-color: rgba(25, 135, 84, 0.28);
+}
+
+/* keep your existing .player-passed style */
