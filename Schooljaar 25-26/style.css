@@ -1,0 +1,18 @@
+/* schooljaar.css */
+
+main {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3rem;
+}
+
+.button-container {
+    display: flex;
+    gap: 2rem;
+}
+
+.back {
+    margin-top: 2rem;
+}

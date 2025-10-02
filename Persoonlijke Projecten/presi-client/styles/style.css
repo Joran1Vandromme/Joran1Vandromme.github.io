@@ -739,3 +739,17 @@ input{
     font-size: 0.7rem;
 
 }
+/* Disconnected player styling */
+.players li.player-left {
+    background: #fbeaea;           /* soft red-ish */
+    border: 1px solid #f3c2c2;
+}
+
+.players li.player-left .name {
+    color: #6b1212;
+}
+
+.players li.player-left .count {
+    color: #8b0000;                /* dark red text for "left" */
+    font-weight: 700;
+}

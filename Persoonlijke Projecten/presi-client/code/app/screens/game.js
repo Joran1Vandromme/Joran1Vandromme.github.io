@@ -298,43 +298,15 @@ export function renderGameFromSnapshot(snap) {
     if (roleBadge) roleBadge.textContent = (snap.you?.role || "burger");
     if (turnInd)   turnInd.textContent = snap.turn?.youCanAct ? "Your turn" : "Waiting…";
 
-    const opp = (snap.others || []).find(o => o.id === pid) || {};
-    const role = opp.role || "burger";
-    const isOffline = !!opp.offline;
-    const cnt = sizeById.get(pid) ?? 0;
-
-    // Count/status column
-    const count = document.createElement("span");
-    count.className = "count";
-
-    if (isOffline) {
-        count.textContent = "left";
-        li.classList.add("player-left");          // background styling
-    } else if (cnt === 0 && (snap.finished || []).includes?.(pid)) {
-        count.textContent = "out";
-        li.classList.add("player-cleared");
-    } else if ((snap.passedPlayers || []).includes?.(pid)) {
-        count.textContent = `passed (${cnt})`;
-        li.classList.add("player-passed");
-    } else {
-        count.textContent = String(cnt);
-    }
-
-
-
-    // Pile rendering: current slag + history
-    // Pile rendering: show last play big + 3 previous plays small (per-move)
+    // Pile rendering: current slag + history (per-move)
     const pileCurrent = document.getElementById("pileCurrent");
     const pileHistory = document.getElementById("pileHistory");
 
     if (pileCurrent) {
         pileCurrent.innerHTML = "";
-
-        // Prefer per-move 'current'; fallback to whole pile (old)
         const currentMove = (snap.moves?.current && Array.isArray(snap.moves.current))
             ? snap.moves.current
-            : (snap.pile?.ordered || []); // fallback
-
+            : (snap.pile?.ordered || []); // fallback to old single pile
         for (const id of currentMove) {
             pileCurrent.appendChild(cardEl(id));
         }
@@ -342,10 +314,8 @@ export function renderGameFromSnapshot(snap) {
 
     if (pileHistory) {
         pileHistory.innerHTML = "";
-
-        // Prefer per-move 'history' (array of arrays). Fallback to per-slag history (older code).
         if (Array.isArray(snap.moves?.history)) {
-            // Only keep the last 2 moves
+            // show only the last 2 previous moves
             const lastTwo = snap.moves.history.slice(-2);
             for (const move of lastTwo) {
                 const row = document.createElement("div");
@@ -358,7 +328,7 @@ export function renderGameFromSnapshot(snap) {
                 pileHistory.appendChild(row);
             }
         } else {
-            // Fallback: render per-slag history (each slag is many moves flattened)
+            // fallback: per-slag history (older server)
             for (const slag of (snap.pileHistory || [])) {
                 const row = document.createElement("div");
                 row.className = "slag-history";
@@ -371,8 +341,6 @@ export function renderGameFromSnapshot(snap) {
             }
         }
     }
-
-
 
     // Your hand (sorted) + highlight if it's your turn
     const hand = document.getElementById("yourHand");
@@ -402,8 +370,7 @@ export function renderGameFromSnapshot(snap) {
         const sizeById = new Map();
         for (const p of (snap.others || [])) {
             nameById.set(p.id, p.name ?? p.id);
-            // FIX: use server-provided handSize; remove stray g.* reference
-            sizeById.set(p.id, p.handSize ?? 0);
+            sizeById.set(p.id, p.handSize ?? 0); // server-provided
         }
         nameById.set(me, snap.you?.name ?? "You");
         sizeById.set(me, (snap.you?.hand || []).length);
@@ -419,8 +386,11 @@ export function renderGameFromSnapshot(snap) {
             for (const p of (snap.others || [])) orderedOthers.push(p.id);
         }
 
+        // Sets used for status
+        const passedSet   = new Set(snap.passedPlayers || []);
+        const finishedArr = Array.isArray(snap.finished) ? snap.finished : []; // optional
+
         // Render opponents in that order
-        const passedSet = new Set(snap.passedPlayers || []);
         for (const pid of orderedOthers) {
             const li = document.createElement("li");
             li.setAttribute("role", "listitem");
@@ -429,32 +399,39 @@ export function renderGameFromSnapshot(snap) {
             const count = document.createElement("span"); count.className = "count";
             name.textContent  = nameById.get(pid) ?? pid;
 
-            const handSize = sizeById.get(pid) ?? 0;
-            const isFinished = handSize === 0;
-            const hasPassed  = passedSet.has(pid) && !isFinished;
+            // lookup this opponent’s extra flags from the snapshot
+            const opp = (snap.others || []).find(o => o.id === pid) || {};
+            const isOffline   = !!opp.offline;
+            const handSize    = sizeById.get(pid) ?? 0;
+            const isFinished  = handSize === 0 && (finishedArr.includes?.(pid) || true); // hand 0 => treated as cleared
+            const hasPassed   = passedSet.has(pid) && !isFinished;
 
-            if (isFinished) {
+            // ORDER: offline > cleared > passed > normal
+            if (isOffline) {
+                count.textContent = "left";
+                li.classList.add("player-left");
+            } else if (isFinished) {
+                count.textContent = "cleared";
                 li.classList.add("player-finished");
-                count.textContent = "cleared"; // single-word status
             } else if (hasPassed) {
-                li.classList.add("player-passed");
                 count.textContent = `passed(${handSize})`;
+                li.classList.add("player-passed");
             } else {
-                count.textContent = handSize;
+                count.textContent = String(handSize);
             }
 
             // role pill
-            const role = (snap.others?.find(o => o.id === pid)?.role) || "burger";
+            const role = opp.role || "burger";
             const pill = document.createElement("span");
             pill.className = `role-pill ${roleToClass(role)}`;
             pill.textContent = roleToLabel(role);
 
-        // order: Name • Role • Count
+            // order: Name • Role • Count
             li.appendChild(name);
             li.appendChild(pill);
             li.appendChild(count);
 
-
+            // Highlight current turn
             if (pid === currentId) {
                 li.classList.add("their-turn");
                 li.setAttribute("aria-live", "polite");
@@ -463,8 +440,7 @@ export function renderGameFromSnapshot(snap) {
             ul.appendChild(li);
         }
 
-
-        // Append [you] as fixed last row; highlight if it's your turn
+        // Append [you] as fixed last row
         const meLi   = document.createElement("li");
         meLi.setAttribute("role", "listitem");
         meLi.setAttribute("aria-current", "true");
@@ -484,7 +460,7 @@ export function renderGameFromSnapshot(snap) {
             meLi.classList.add("player-passed");
             meCnt.textContent = `passed(${meHandSize})`;
         } else {
-            meCnt.textContent = meHandSize;
+            meCnt.textContent = String(meHandSize);
         }
 
         const myRole = snap.you?.role || "burger";
@@ -496,21 +472,18 @@ export function renderGameFromSnapshot(snap) {
         meLi.appendChild(mePill);
         meLi.appendChild(meCnt);
 
-
         if (currentId === me) {
             meLi.classList.add("their-turn");
             meLi.setAttribute("aria-live", "polite");
         }
 
         ul.appendChild(meLi);
-
     }
 
     // ⏱️ Turn timer UI (show/hide + progress)
     if (snap?.timer?.deadline && snap?.turn) {
         updateTurnTimerUI(snap);
     } else if (typeof stopTurnTimerUI === "function") {
-        // defensively hide/stop if no timer in the snapshot
         stopTurnTimerUI();
     }
 
