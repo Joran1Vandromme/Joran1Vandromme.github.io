@@ -8,8 +8,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="presi-server" />
-    <orderEntry type="module" module-name="Schooljaar 25-26" />
-    <orderEntry type="module" module-name="Schooljaar 24-25" />
   </component>
 </module>
