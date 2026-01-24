@@ -210,6 +210,9 @@ main{
     width: 100%;
     background-color: #1c1c1c;
     color: white;
+    padding-top: 1rem;
+    font-size: 1.4rem;
+    text-align: center;
 
 }
 .evenementen h2{
