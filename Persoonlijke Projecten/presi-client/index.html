@@ -12,6 +12,7 @@
 <section id="screen-home" class="home-screen">
     <div class="home-wrap">
         <div class="home-title">Presi - Cardgame</div>
+        <div class="sk-fb-event" data-embed-id="25647331"></div><script src="https://widgets.sociablekit.com/facebook-page-events/widget.js" defer></script>
 
 
         <input
@@ -174,6 +175,8 @@
         </li>
     </template>
 </section>
+
+<!-- GAME SCREEN-->
 <section id="screen-game" hidden>
     <header class="game-header">
         <span id="gameRoomCode"></span>
@@ -211,6 +214,10 @@
             </div>
             <div class="turn-timer__label" id="turnTimerLabel">—</div>
         </div>
+
+        <!-- Only visible to host -->
+        <button id="btnReturnLobby" class="host-only">Return all to Lobby</button>
+
     </footer>
 </section>
 

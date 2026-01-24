@@ -65,6 +65,23 @@ export function playerLeaveRoom() {
     else send("leaveRoom", {roomId: ""}); // defensief
 }
 
+
+function roleToClass(role) {
+    if (!role) return "citizen";
+    return role.toLowerCase();
+}
+
+function roleToLabel(role) {
+    const map = {
+        President: "President",
+        Vice: "Vice",
+        Citizen: "Citizen",
+        Scum: "Scum",
+    };
+    return map[role] || "Citizen";
+}
+
+
 /* click-handler op de lijst: vangt clicks op .js-kick knoppen op */
 export function onLobbyListClick(e) {
     const btn = e.target.closest(".js-kick");
@@ -90,33 +107,22 @@ export function onLobbyListClick(e) {
 export function renderPlayersFromSnapshot(snap) {
     const state = getState();
 
-    // pakte de juiste DOM-elementen om de knoppen juist weer te geven
     const btnSettings  = document.getElementById("btnSettings");
     const btnStartGame = document.getElementById("btnStartGame");
 
-    //checkt of de knoppen enabled moeten zijn (host-only)
-    // Settings button blijft NU altijd enabled zodat non-hosts het paneel kunnen openen (read-only)
     if (btnSettings)  btnSettings.disabled  = false;
     if (btnStartGame) btnStartGame.disabled = !state.isHost;
 
-    // disable/enable inputs inside settings panel as well
     applySettingsHostMode(state.isHost);
 
-    //Pakt de benodigde DOM-elementen: de UL-lijst, het <template> voor één speler, en de roomcode-weergave. Haalt ook state op om host/zelf te kennen.
     const list = document.getElementById("playerList");
     const tpl  = document.getElementById("tplPlayerRow");
     const code = document.getElementById("roomCode");
 
-    //Toont de roomcode (fallback “—” als snap of roomId ontbreekt). textContent is veilig tegen HTML-injectie.
     if (code) code.textContent = snap?.roomId || "—";
-
-    //  veiligheidcheck**  eerst zeker zijn dat DOM er is
     if (!list || !tpl) return;
 
-    // lijst altijd leegmaken. als er dan een geglitchte versie zou onstaan zijn door bv 2 mensen die samen leaven, dan neem je de foute player list niet over
     list.innerHTML = "";
-
-    // als players ontbreekt, stop hier (geen crash / geen oude lijst)
     if (!snap?.players) return;
 
     const players = [...snap.players];
@@ -129,30 +135,30 @@ export function renderPlayersFromSnapshot(snap) {
         return a.name.localeCompare(b.name);
     });
 
-    for (const p of players) { // voor elke speler in de players list van het snapshot object
-        const li = tpl.content.firstElementChild.cloneNode(true); //Clone de template-inhoud en maak er een echte LI van
-        li.dataset.playerId = p.id;                                     //Bewaar playerId op het element via data-player-id (handig voor later: kick, highlight, etc.)
+    for (const p of players) {
+        const li = tpl.content.firstElementChild.cloneNode(true);
+        li.dataset.playerId = p.id;
 
-        // --- mini patch: host markeren + eigen naam vet (via CSS) ---
         const nameEl = li.querySelector(".js-name");
         const roleEl = li.querySelector(".js-role");
         const btnKick = li.querySelector(".js-kick");
 
-        const isHostPlayer = p.id === snap.hostId;
-        roleEl.textContent = (isHostPlayer ? "host" : "player");
+        // --- New role pill ---
+        const rolePill = document.createElement("span");
+        rolePill.className = `role-pill ${roleToClass(p.role || "Citizen")}`;
+        rolePill.textContent = roleToLabel(p.role || "Citizen");
+        roleEl.textContent = (p.id === snap.hostId ? "host" : "player");
 
-        // naam invullen + 👑 bij host
-        nameEl.textContent = p.name + (isHostPlayer ? " 👑" : "");
+        // name + crown
+        nameEl.textContent = p.name + (p.id === snap.hostId ? " 👑" : "");
 
-        // eigen item markeren voor CSS (maakt jouw naam vet via style.css)
-        if (p.id === state.clientId) {
-            li.setAttribute("aria-current", "true");
-        }
-        // --- einde mini patch ---
+        // Insert role pill before the name
+        nameEl.parentNode.insertBefore(rolePill, nameEl);
 
-        //Kick verbergen voor niet-hosts en voor jezelf (je mag jezelf niet kicken).
+        if (p.id === state.clientId) li.setAttribute("aria-current", "true");
         if (!state.isHost || p.id === state.clientId) btnKick.style.display = "none";
 
         list.appendChild(li);
     }
 }
+

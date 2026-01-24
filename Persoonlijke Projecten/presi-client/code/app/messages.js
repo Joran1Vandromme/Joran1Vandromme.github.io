@@ -15,6 +15,8 @@ import { renderGameFromSnapshot } from "./screens/game.js";
 import { showSlagPopup } from "./screens/game.js"; // make sure path matches your layout
 
 
+
+
 export function registerMessageHandlers() {
     // als we van de server een bericht met type: clientId krijgen. --> haal clientId uit data en geef mee aan de state
     on("clientId", ({ clientId }) => {
@@ -163,6 +165,36 @@ export function registerMessageHandlers() {
         // data: { type, byId, byName, cards, value? }
         showSlagPopup(data);
     });
+
+    // server tells all clients to return to the lobby (reason optional)
+    on("backToLobby", (data) => {
+        console.log("📥 backToLobby received:", data);
+
+        try {
+            // stop any visual timer if available
+            if (typeof window.stopTurnTimerUI === "function") window.stopTurnTimerUI();
+
+            // clear game state
+            setState({ game: null, phase: "lobby" });
+
+            // optional UX notice
+            const reason = data?.reason || "unknown reason";
+            if (typeof window.showTransientNotice === "function") {
+                window.showTransientNotice(`Returned to lobby: ${reason}`);
+            } else {
+                console.log(`Returned to lobby: ${reason}`);
+            }
+
+            // show the lobby
+            showScreen("screen-lobby");
+        } catch (err) {
+            console.error("backToLobby handler failed:", err);
+            alert("An error occurred returning to lobby. Reloading...");
+            location.reload();
+        }
+    });
+
+
 
 
     // als we van de server een bericht met type: error --> error afhandeling

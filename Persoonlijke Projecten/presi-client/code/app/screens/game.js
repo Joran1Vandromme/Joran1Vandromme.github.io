@@ -20,6 +20,8 @@ const RANK_IDX   = Object.fromEntries(RANK_ORDER.map((r,i)=>[r,i]));
 const SUIT_ORDER = ["C","D","H","S","V1","V2","V3","V4"];
 const SUIT_IDX   = Object.fromEntries(SUIT_ORDER.map((s,i)=>[s,i]));
 
+
+
 function suitSymbol(code) {
     switch (code) {
         case "C":  return "♣";
@@ -356,6 +358,7 @@ export function renderGameFromSnapshot(snap) {
     resetSelectionOrder();
 
     // Player list (order = players after ME, wrapping; [you] always last)
+
     const ul = document.getElementById("othersList");
     if (ul) {
         ul.innerHTML = "";
@@ -365,126 +368,106 @@ export function renderGameFromSnapshot(snap) {
         const idx       = Number(snap.turn?.index ?? 0);
         const currentId = snap.turn?.current ?? (order.length ? order[(idx % order.length + order.length) % order.length] : null);
 
-        // Build lookup for names/sizes (others + you)
-        const nameById = new Map();
-        const sizeById = new Map();
+        // Build lookups
+        const metaById = new Map(); // {id -> {name, handSize, role, offline}}
         for (const p of (snap.others || [])) {
-            nameById.set(p.id, p.name ?? p.id);
-            sizeById.set(p.id, p.handSize ?? 0); // server-provided
+            metaById.set(p.id, {
+                name: p.name ?? p.id,
+                handSize: p.handSize ?? 0,
+                role: p.role || "burger",
+                offline: !!p.offline,
+            });
         }
-        nameById.set(me, snap.you?.name ?? "You");
-        sizeById.set(me, (snap.you?.hand || []).length);
+        metaById.set(me, {
+            name: snap.you?.name ?? "You",
+            handSize: (snap.you?.hand || []).length,
+            role: snap.you?.role || "burger",
+            offline: false, // you can't be "left" from your own client
+        });
 
-        // Derive list of opponents starting from the player AFTER me, wrapping
+        // Derive list of opponents starting from player AFTER me
         const orderedOthers = [];
         if (order.length && order.includes(me)) {
             const meIdx = order.indexOf(me);
-            for (let i = 1; i < order.length; i++) {
-                orderedOthers.push(order[(meIdx + i) % order.length]);
-            }
+            for (let i = 1; i < order.length; i++) orderedOthers.push(order[(meIdx + i) % order.length]);
         } else {
             for (const p of (snap.others || [])) orderedOthers.push(p.id);
         }
 
-        // Sets used for status
-        const passedSet   = new Set(snap.passedPlayers || []);
-        const finishedArr = Array.isArray(snap.finished) ? snap.finished : []; // optional
+        const passedSet = new Set(snap.passedPlayers || []);
 
-        // Render opponents in that order
-        for (const pid of orderedOthers) {
+        // Helper: build one row
+        function addRow(pid, isYou = false) {
             const li = document.createElement("li");
             li.setAttribute("role", "listitem");
+            if (isYou) li.setAttribute("aria-current", "true");
 
+            const meta = metaById.get(pid) || { name: pid, handSize: 0, role: "burger", offline: false };
             const name  = document.createElement("span"); name.className = "name";
             const count = document.createElement("span"); count.className = "count";
-            name.textContent  = nameById.get(pid) ?? pid;
+            const pill  = document.createElement("span");
 
-            // lookup this opponent’s extra flags from the snapshot
-            const opp = (snap.others || []).find(o => o.id === pid) || {};
-            const isOffline   = !!opp.offline;
-            const handSize    = sizeById.get(pid) ?? 0;
-            const isFinished  = handSize === 0 && (finishedArr.includes?.(pid) || true); // hand 0 => treated as cleared
-            const hasPassed   = passedSet.has(pid) && !isFinished;
+            name.textContent = isYou ? `${meta.name} [you]` : meta.name;
+            pill.className   = `role-pill ${roleToClass(meta.role)}`;
+            pill.textContent = roleToLabel(meta.role);
 
-            // ORDER: offline > cleared > passed > normal
-            if (isOffline) {
-                count.textContent = "left";
+            // Decide status display
+            const isFinished = meta.handSize === 0;
+            const hasPassed  = passedSet.has(pid) && !isFinished;
+            const isLeft     = !!meta.offline;
+
+            // Clear any previous status classes and set the right one
+            if (isLeft) {
                 li.classList.add("player-left");
+                count.textContent = "left";
             } else if (isFinished) {
-                count.textContent = "cleared";
                 li.classList.add("player-finished");
+                count.textContent = "cleared";
             } else if (hasPassed) {
-                count.textContent = `passed(${handSize})`;
                 li.classList.add("player-passed");
+                count.textContent = `passed(${meta.handSize})`;
             } else {
-                count.textContent = String(handSize);
+                count.textContent = meta.handSize;
             }
 
-            // role pill
-            const role = opp.role || "burger";
-            const pill = document.createElement("span");
-            pill.className = `role-pill ${roleToClass(role)}`;
-            pill.textContent = roleToLabel(role);
-
-            // order: Name • Role • Count
+            // Append: Name • Role • Count
             li.appendChild(name);
             li.appendChild(pill);
             li.appendChild(count);
 
-            // Highlight current turn
             if (pid === currentId) {
                 li.classList.add("their-turn");
                 li.setAttribute("aria-live", "polite");
             }
-
             ul.appendChild(li);
         }
 
-        // Append [you] as fixed last row
-        const meLi   = document.createElement("li");
-        meLi.setAttribute("role", "listitem");
-        meLi.setAttribute("aria-current", "true");
-
-        const meName = document.createElement("span"); meName.className = "name";
-        const meCnt  = document.createElement("span"); meCnt.className  = "count";
-        meName.textContent = `${nameById.get(me) ?? "You"} [you]`;
-
-        const meHandSize = sizeById.get(me) ?? 0;
-        const meFinished = meHandSize === 0;
-        const mePassed   = passedSet.has(me) && !meFinished;
-
-        if (meFinished) {
-            meLi.classList.add("player-finished");
-            meCnt.textContent = "cleared";
-        } else if (mePassed) {
-            meLi.classList.add("player-passed");
-            meCnt.textContent = `passed(${meHandSize})`;
-        } else {
-            meCnt.textContent = String(meHandSize);
-        }
-
-        const myRole = snap.you?.role || "burger";
-        const mePill = document.createElement("span");
-        mePill.className = `role-pill ${roleToClass(myRole)}`;
-        mePill.textContent = roleToLabel(myRole);
-
-        meLi.appendChild(meName);
-        meLi.appendChild(mePill);
-        meLi.appendChild(meCnt);
-
-        if (currentId === me) {
-            meLi.classList.add("their-turn");
-            meLi.setAttribute("aria-live", "polite");
-        }
-
-        ul.appendChild(meLi);
+        // Others (in order)
+        for (const pid of orderedOthers) addRow(pid, false);
+        // You (always last)
+        addRow(me, true);
     }
+
 
     // ⏱️ Turn timer UI (show/hide + progress)
     if (snap?.timer?.deadline && snap?.turn) {
         updateTurnTimerUI(snap);
     } else if (typeof stopTurnTimerUI === "function") {
         stopTurnTimerUI();
+    }
+
+    // --- Host-only "Return to Lobby" button ---
+    const btnReturnLobby = document.getElementById("btnReturnLobby");
+    if (btnReturnLobby) {
+        // Only show for host
+        const isHost = snap.room?.hostId === snap.you?.id;
+        btnReturnLobby.style.display = isHost ? "inline-block" : "none";
+
+        btnReturnLobby.onclick = () => {
+            if (confirm("Return everyone to the lobby?")) {
+                send("forceReturnLobby",{});
+            }
+        };
     }
 
     // Make sure interactions are wired and buttons reflect state
@@ -506,6 +489,10 @@ function cardEl(cardId) {
     btn.textContent = suit ? `${face} ${suitSymbol(suit)}` : face;
     return btn;
 }
+
+
+
+
 
 
 //==========================

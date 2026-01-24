@@ -753,3 +753,40 @@ input{
     color: #8b0000;                /* dark red text for "left" */
     font-weight: 700;
 }
+
+.player-left {
+    background: #ffd6d6; /* soft red background */
+    color: #8b0000;      /* dark red text */
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.host-only {
+    display: none;
+    background-color: #b33;
+    color: white;
+    border: none;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+.host-only:hover {
+    background-color: #d44;
+}
+
+
+.role-pill {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.8em;
+    margin-right: 6px;
+    background: #eee;
+    color: #333;
+}
+.role-pill.president { background: gold; color: black; }
+.role-pill.vice { background: lightblue; color: black; }
+.role-pill.citizen { background: #ccc; color: #333; }
+.role-pill.scum { background: #d9534f; color: white; }
+
