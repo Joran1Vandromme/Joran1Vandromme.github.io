@@ -42,6 +42,10 @@ header::after {
 
 }
 
+.sk-fb-event{
+    background: #272c2c;
+}
+
 header nav{
     display: flex;
     margin-block: 1rem;
