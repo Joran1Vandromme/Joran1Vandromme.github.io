@@ -1,0 +1,399 @@
+* {
+    margin: 0;
+    font-family: "Century Gothic";
+}
+
+html, body {
+    background: white;
+    margin: 0;
+}
+
+.top-header{
+    display: grid;
+    position: relative;
+    place-items: center;
+    background-image: url("../images/about/header-bg.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding-bottom: 22rem;
+}
+header nav{
+    display: flex;
+    margin-block: 1rem;
+    min-width: 60%;
+}
+#topDucatiLogo{
+    max-width: 5%;
+    margin: 0.5rem;
+    filter: brightness(2);
+
+}
+
+.main-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 2rem;
+    background-color: white;
+    min-height: 100px;
+    max-width: 90%;
+}
+
+.nav-logo img {
+    height: 60px;
+    transition: filter 0.2s ease;
+    margin-right: 3rem;
+}
+
+.nav-logo:hover img {
+    filter: brightness(0.4);
+}
+
+.nav-links {
+    display: flex;
+    font-size: 1.4rem;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-align: center;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px;
+}
+
+.nav-links a:hover {
+    color: white;
+    background-color: #8f8f8f;
+    border-radius: 3px;
+    padding: 5px;
+}
+/*
+==========================
+main
+============================
+ /* PAGE + WIDTH (70% of full page width) */
+.about-main{
+    width: 100%;
+    padding-block: clamp(2rem, 4vw, 4rem);
+}
+
+.about-layout{
+    width: min(70vw, 1200px);
+    margin-inline: auto;
+    display: grid;
+    gap: clamp(18px, 2vw, 26px);
+
+    /* This matches your sketch layout */
+    grid-template-columns: 2fr 1fr; /* left wide column + right narrow column */
+    grid-auto-rows: minmax(140px, auto);
+}
+
+/* GREY HERO BOX */
+.about-hero{
+    grid-column: 1 / -1;
+    padding: clamp(18px, 2.5vw, 28px);
+    position: relative; /* required for pseudo-element */
+}
+.about-hero::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+
+    width: 100%;
+    height: 8px; /* controls how soft / long the fade is */
+
+    background: linear-gradient(
+            to bottom,
+            rgba(0,0,0,1),
+            rgba(216, 43, 43, 0)
+    );
+
+    pointer-events: none;
+}
+
+/* HERO TYPO */
+.about-kicker{
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.5rem;
+    color: #111;
+}
+
+.about-hero h1{
+    margin: 0 0 0.75rem 0;
+    font-size: clamp(1.9rem, 3vw, 3rem);
+    line-height: 1.1;
+    color: #111;
+}
+
+.about-lead{
+    margin: 0;
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    line-height: 1.9;
+    color: #111;
+    opacity: 0.95;
+}
+
+/* TEXT “BLACK” BOXES (no bg, no border; just spacing) */
+.about-text{
+    padding: clamp(8px, 1vw, 12px);
+    color: #111;
+}
+
+.about-text h2{
+    margin: 0 0 0.65rem 0;
+    font-size: clamp(1.25rem, 1.7vw, 1.7rem);
+    line-height: 1.2;
+}
+
+.about-text p{
+    margin: 0;
+    line-height: 1.95;
+    font-size: 1.05rem;
+    opacity: 0.92;
+}
+
+.about-text p + p{
+    margin-top: 0.85rem;
+}
+
+/* RED IMAGE PLACEHOLDERS */
+.about-media{
+    min-height: 140px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* --- PLACEMENT TO MATCH YOUR SKETCH --- */
+/* Row 1: big text left, small image right (already by markup order) */
+
+/* Row 2: small image left, big text right */
+.m2{ grid-column: 1; }
+.t2{ grid-column: 2; }
+
+/* Row 3: text left + text right (two black boxes) */
+.t3{ grid-column: 1; }
+.t4{ grid-column: 2; }
+
+/* Row 4: big text left, small image right */
+.t5{ grid-column: 1; }
+.m3{
+    grid-column: 2; /* right column */
+    grid-row: span 2; /* spans two text rows */
+    min-height: 320px; /* visually balanced height */
+}
+/* Row 5: big image left, big text right (match the sketch bottom row feel) */
+.t6{ grid-column: 1; }
+.m4{
+    display: none;
+}
+/* Row 6: final big text spanning (like a concluding block) */
+.t7{ grid-column: 1 / -1; }
+.t8{ grid-column: 1 / -1; }
+
+.m1{
+    background-image: url("../images/about/vk1.jpg");
+}
+
+
+/* Image 2 – left side */
+.m2{
+    background-image: url("../images/about/rechthoek1.jpg");
+}
+
+
+/* Image 3 – tall image (circuit section) */
+.m3{
+    background-image: url("../images/about/vk2.jpg");
+    grid-row: span 2; /* keeps it tall */
+    min-height: 320px;
+}
+/* Optional little styling bits */
+.about-hashtag{
+    font-weight: 800;
+    opacity: 0.9;
+}
+
+.about-sign{
+    font-weight: 800;
+}
+
+/* RESPONSIVE: stack into one column on smaller screens */
+@media (max-width: 900px){
+    .about-layout{
+        width: min(92vw, 900px);
+        grid-template-columns: 1fr;
+    }
+
+    .about-hero,
+    .about-text,
+    .about-media{
+        grid-column: 1 / -1 !important;
+    }
+
+    .about-media{
+        min-height: 220px;
+    }
+}
+
+
+
+/*=======================
+footer
+========================
+ */
+.site-footer{
+    width: 100%;
+    background: #0e0e0e;
+    color: #eaeaea;
+    margin-top: 6rem;
+}
+
+/* TOP AREA */
+.footer-top{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+
+    padding: 3rem 6vw;
+}
+
+.footer-title{
+    font-size: 1.1rem;
+    font-weight: 600;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+/* Sponsors row */
+.sponsors{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1.5rem;
+
+    flex-wrap: wrap; /* important for smaller screens */
+}
+
+.sponsor{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* consistent tile size like your screenshot */
+    width: clamp(70px, 6vw, 110px);
+    height: clamp(45px, 4.5vw, 80px);
+    scale: 140%;
+
+    text-decoration: none;
+}
+
+.sponsor img{
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: grayscale(0); /* keep as-is; set to 1 if you want monochrome */
+    opacity: 0.95;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.sponsor:hover img{
+    transform: scale(1.08);
+    opacity: 1;
+}
+
+/* BOTTOM BAR */
+.footer-bottom{
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding: 1.2rem 6vw;
+    text-align: center;
+    background: #0a0a0a;
+}
+
+.footer-bottom p{
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.footer-link{
+    color: #c1121f; /* ducati-ish red */
+    text-decoration: none;
+}
+
+.footer-link:hover{
+    text-decoration: underline;
+}
+
+/* =========================
+   MEDIA QUERIES
+   ========================= */
+
+/* max-width: 1100px */
+@media (max-width: 1100px){
+    /* nav */
+    .main-nav{
+        flex-direction: column;
+        gap: 1rem;
+        width: 80%;
+    }
+    .main-nav a{ font-size: 1rem; }
+    .nav-logo img{
+        margin-right: 0;
+        max-width: 100%;
+    }
+
+}
+
+
+
+/* Responsive: stack title above logos on narrow screens */
+@media (max-width: 800px){
+    .footer-top{
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .sponsors{
+        justify-content: flex-start;
+    }
+    .nav-links{
+        flex-direction: column;
+    }
+    .nav-links a{
+        font-size: 2rem;
+        margin: 0;
+        border: 2px solid grey;
+        border-radius: 5px;
+        background-color: #d1d1d1;
+
+    }
+}
+
+/* =========================
+   RESPONSIVE BY ASPECT RATIO
+   ========================= */
+
+/* Tall screens / portrait-ish (phones, narrow browser windows)
+   1/1 means square; smaller = taller than wide */
+@media (max-aspect-ratio: 1/1){
+    /* nav stacks */
+    .main-nav{
+        flex-direction: column;
+        gap: 1rem;
+        width: 90%;
+    }
+    .nav-logo img{ margin-right: 0; }
+
+
+
+
+}
+
+

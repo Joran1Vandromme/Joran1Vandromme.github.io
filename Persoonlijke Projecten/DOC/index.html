@@ -1,25 +1,28 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl" data-theme="a">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="styles/HomePage.css">
-    <title>Official DOC Fiandre Website</title>
+    <title>Official DOC Fiandre Website </title>
 </head>
 <body>
 <header>
-    <img id="topDucatiLogo" alt="Logo van ducati" src="images/logo-ducati.png">
+    <img id="topDucatiLogo" alt="Logo van ducati" src="images/homepage/logo-ducati.png">
 
-    <!-- Taal selector (rechtsboven) -->
+
+    <!-- Taal selector (rechtven) -->
     <div class="lang">
         <a class="active" href="index.html" lang="nl" aria-label="Nederlands">NL</a>
         <a href="index-fr.html" lang="fr" aria-label="Français">FR</a>
         <a href="index-en.html" lang="en" aria-label="English">EN</a>
     </div>
 
+
     <nav class="main-nav">
         <a href="index.html" class="nav-logo">
-            <img src="images/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
+            <img src="images/homepage/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
         </a>
+
 
         <div class="nav-links">
             <a href="pages/About_Us.html">Over ons</a>
@@ -29,33 +32,190 @@
         </div>
     </nav>
 
+
     <div class="becomeAMemberPopUp">
         <p>Word lid van DOC Fiandre en geniet van events, ritten en voordelen.</p>
         <a class="becomeAMemberPopUp-btn" href="pages/Become_A_Member.html">Word lid</a>
     </div>
+
+
     <div class="SocialMediaLinks">
         <a href="https://www.facebook.com/DesmoClub.be">
-            <img src="images/facebook.png">
+            <img src="images/homepage/facebook.png" alt="Facebook">
         </a>
         <a href="https://www.facebook.com/DesmoClub.be">
-            <img src="images/instagram%20(1).png">
+            <img src="images/homepage/instagram%20(1).png" alt="Instagram">
         </a>
         <a href="https://www.facebook.com/DesmoClub.be">
-            <img src="images/whatsapp.png">
+            <img src="images/homepage/whatsapp.png" alt="WhatsApp">
         </a>
         <a href="https://www.facebook.com/DesmoClub.be">
-            <img src="images/mail.png">
+            <img src="images/homepage/mail.png" alt="Mail">
         </a>
-
-
-
     </div>
 </header>
+
+
 <main>
+    <section class="promo">
+        <div class="promo-row">
+            <!-- Left block -->
+            <article class="promo-block">
+                <div class="promo-img">
+                    <img src="images/homepage/sfeer1.png" alt="Eén passie">
+                </div>
+                <div class="promo-text">
+                    <h2>Eén passie</h2>
+                    <p>
+                        Ducati, de meest tot de verbeelding sprekende premium motorfietsen, het tijdloze Italiaanse design.
+                        Het Ducati dealernetwerk strekt zich wereldwijd uit over 92 landen en ongeveer 150 Ducati Official Clubs.
+                    </p>
+                </div>
+            </article>
+
+            <!-- Right block -->
+            <article class="promo-block">
+                <div class="promo-img">
+                    <img src="images/homepage/sfeer2.png" alt="Eén club">
+                </div>
+                <div class="promo-text">
+                    <h2>Eén club</h2>
+                    <p>
+                        Word lid van onze grote familie! Word lid van onze Desmo Official Club. DOC Fiandre is ontstaan
+                        gebaseerd op vriendschap, plezier en respect. Bij ons neemt u deel aan evenementen, beleeft u
+                        unieke momenten met vrienden die deze Italiaanse passie met u delen.
+                    </p>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section class="carousel">
+        <button class="carousel-btn prev" aria-label="Previous image">&#10094;</button>
+
+        <div class="carousel-track">
+            <img src="images/carousel/01.jpg" alt="DOC Fiandre ride 1">
+            <img src="images/carousel/02.jpg" alt="DOC Fiandre ride 2">
+            <img src="images/carousel/03.jpg" alt="DOC Fiandre ride 3">
+            <img src="images/carousel/04.jpg" alt="DOC Fiandre ride 4">
+            <img src="images/carousel/05.jpg" alt="DOC Fiandre ride 5">
+            <img src="images/carousel/06.jpg" alt="DOC Fiandre ride 6">
+            <img src="images/carousel/07.jpg" alt="DOC Fiandre ride 7">
+            <img src="images/carousel/08.jpg" alt="DOC Fiandre ride 8">
+            <img src="images/carousel/09.jpg" alt="DOC Fiandre ride 9">
+            <img src="images/carousel/10.jpg" alt="DOC Fiandre ride 10">
+            <img src="images/carousel/11.jpg" alt="DOC Fiandre ride 11">
+            <img src="images/carousel/12.jpg" alt="DOC Fiandre ride 12">
+            <img src="images/carousel/13.jpg" alt="DOC Fiandre ride 13">
+            <img src="images/carousel/14.jpg" alt="DOC Fiandre ride 14">
+            <img src="images/carousel/15.jpg" alt="DOC Fiandre ride 15">
+            <img src="images/carousel/16.jpg" alt="DOC Fiandre ride 16">
+        </div>
+
+        <button class="carousel-btn next" aria-label="Next image">&#10095;</button>
+    </section>
+
     <section class="evenementen">
         <h2>Evenementen</h2>
-        <div class="sk-fb-event" data-embed-id="25647247"></div><script src="https://widgets.sociablekit.com/facebook-page-events/widget.js" defer></script>    </section>
+
+
+        <div id="eventsGrid" class="events-grid"></div>
+
+
+        <!-- Modal -->
+        <div id="eventModal" class="event-modal" aria-hidden="true">
+            <div class="event-modal__backdrop" data-close="true"></div>
+
+
+            <!-- the X is outside the card (top-left of card area) -->
+            <button class="event-modal__close" type="button" aria-label="Close" data-close="true">×</button>
+
+
+            <div class="event-modal__card" role="dialog" aria-modal="true">
+                <img id="modalImg" class="event-modal__img" alt="">
+                <div class="event-modal__body">
+                    <h3 id="modalTitle" class="event-modal__title"></h3>
+
+
+                    <div class="event-modal__section">
+                        <div class="event-modal__label">DATE / TIME</div>
+                        <div id="modalDateTime" class="event-modal__text"></div>
+                    </div>
+
+
+                    <div class="event-modal__section">
+                        <div class="event-modal__label">LOCATION</div>
+                        <a id="modalLocation" class="event-modal__text" href="#" target="_blank" rel="noopener"></a>
+                    </div>
+                    <div class="event-modal__section">
+                        <div class="event-modal__label">DESCRIPTION</div>
+                        <div id="modalDesc" class="event-modal__text event-modal__desc"></div>
+                    </div>
+
+
+                    <a id="modalFb" class="event-modal__fb" href="#" target="_blank" rel="noopener">
+                        View on Facebook
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ducati-logo" aria-label="Ducati Official Club">
+        <div class="ducati-logo__inner">
+            <span class="ducati-logo__brand">DUCATI</span>
+            <span class="ducati-logo__sep" aria-hidden="true">|</span>
+            <span class="ducati-logo__title">Official Club</span>
+            <span class="ducati-logo__year" id="ducatiYear"></span>
+        </div>
+    </section>
+
+
+    <script>
+        // Auto-set current year
+        document.getElementById("ducatiYear").textContent = new Date().getFullYear();
+    </script>
 </main>
+
+<footer class="site-footer">
+    <div class="footer-top">
+        <p class="footer-title">Met dank aan onze sponsers</p>
+
+
+        <div class="sponsors" aria-label="Sponsors">
+            <!-- Replace filenames with your real files in images/sponsors/ -->
+
+            <a class="sponsor" href="https://www.ducatiherzele.be/" aria-label="Sponsor 2">
+                <img src="images/sponsors/ducati-herzele2-site-1-150x150.jpg" alt="Sponsor 2">
+            </a>
+            <a class="sponsor" href="https://www.inter-track.be/nl" aria-label="Sponsor 3">
+                <img src="images/sponsors/Intertrack2-1-e1667498343599.png" alt="Sponsor 3">
+            </a>
+            <a class="sponsor" href="https://www.maene.be/nl_BE/" aria-label="Sponsor 4">
+                <img src="images/sponsors/logo-Maene.png" alt="Sponsor 4">
+            </a>
+            <a class="sponsor" href="https://www.hautekiet.be" aria-label="Sponsor 5">
+                <img src="images/sponsors/logo_hautekiet_square_360-1-150x150.jpg" alt="Sponsor 5">
+            </a>
+            <a class="sponsor" href="https://www.motorsportschool.be/" aria-label="Sponsor 6">
+                <img src="images/sponsors/Motorschool2-1-300x244.png" alt="Sponsor 6">
+            </a>
+        </div>
+    </div>
+
+
+    <div class="footer-bottom">
+        <p>
+            Copyright © <span id="footerYear"></span> | Ducati Official Club Fiandre
+            <a class="footer-link" href="#">DOCFiandre</a>
+        </p>
+    </div>
+</footer>
+
+
+<script>
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
+</script>
+
 
 <script type="text/javascript" charset="utf-8" src="scripts/code.js"></script>
 </body>

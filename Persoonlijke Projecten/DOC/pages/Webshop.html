@@ -2,11 +2,66 @@
 <html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="styles/style.css">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../styles/about.css">
+    <title>About us page</title>
 </head>
 <body>
+<header>
+    <img id="topDucatiLogo" alt="Logo van ducati" src="../images/homepage/logo-ducati.png">
+    <nav class="main-nav">
+        <a href="../index.html" class="nav-logo">
+            <img src="../images/homepage/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
+        </a>
 
+
+        <div class="nav-links">
+            <a href="../index.html">Home Pagina</a>
+            <a href="../pages/Become_A_Member.html">Lid worden</a>
+            <a href="../pages/Webshop.html">Webshop</a>
+            <a href="../pages/ContactInfo.html">Contact</a>
+        </div>
+    </nav>
+</header>
+<footer class="site-footer">
+    <div class="footer-top">
+        <p class="footer-title">Met dank aan onze sponsers</p>
+
+
+        <div class="sponsors" aria-label="Sponsors">
+            <!-- Replace filenames with your real files in images/sponsors/ -->
+
+            <a class="sponsor" href="https://www.ducatiherzele.be/" aria-label="Sponsor 2">
+                <img src="../images/sponsors/ducati-herzele2-site-1-150x150.jpg" alt="Sponsor 2">
+            </a>
+            <a class="sponsor" href="https://www.inter-track.be/nl" aria-label="Sponsor 3">
+                <img src="../images/sponsors/Intertrack2-1-e1667498343599.png" alt="Sponsor 3">
+            </a>
+            <a class="sponsor" href="https://www.maene.be/nl_BE/" aria-label="Sponsor 4">
+                <img src="../images/sponsors/logo-Maene.png" alt="Sponsor 4">
+            </a>
+            <a class="sponsor" href="https://www.hautekiet.be" aria-label="Sponsor 5">
+                <img src="../images/sponsors/logo_hautekiet_square_360-1-150x150.jpg" alt="Sponsor 5">
+            </a>
+            <a class="sponsor" href="https://www.motorsportschool.be/" aria-label="Sponsor 6">
+                <img src="../images/sponsors/Motorschool2-1-300x244.png" alt="Sponsor 6">
+            </a>
+        </div>
+    </div>
+
+
+    <div class="footer-bottom">
+        <p>
+            Copyright © <span id="footerYear"></span> | Ducati Official Club Fiandre
+            <a class="footer-link" href="#">DOCFiandre</a>
+        </p>
+    </div>
+</footer>
+
+
+<script>
+    document.getElementById("footerYear").textContent = new Date().getFullYear();
+</script>
 <script type="text/javascript" charset="utf-8" src="scripts/code.js"></script>
 </body>
 </html>
