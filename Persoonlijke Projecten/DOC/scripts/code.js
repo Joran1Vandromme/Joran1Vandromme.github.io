@@ -144,7 +144,7 @@ setInterval(() => {
     }
 
     async function loadEvents() {
-        const res = await fetch("/Json-Files/events.json", { cache: "no-store" });
+        const res = await fetch("./Json-Files/events.json", { cache: "no-store" });
         if (!res.ok) throw new Error("Could not load events.json");
         const events = await res.json();
 
