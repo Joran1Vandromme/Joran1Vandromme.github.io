@@ -4,23 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../styles/about.css">
+    <script src="../scripts/about.js" defer></script>
     <title>About us page</title>
 </head>
 <body>
 <header class="top-header">
     <nav class="main-nav">
+        <!-- Mobile hamburger -->
+        <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open menu"
+                aria-controls="mobileMenu"
+                aria-expanded="false">
+        <span class="nav-toggle__bars" aria-hidden="true">
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+        </span>
+        </button>
+
+        <!-- Center logo (also home link) -->
         <a href="../index.html" class="nav-logo">
             <img src="../images/homepage/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
         </a>
 
-
+        <!-- Desktop links -->
         <div class="nav-links">
-            <a href="../index.html">Home Pagina</a>
+            <a href="../index.html">Home</a>
             <a href="../pages/Become_A_Member.html">Lid worden</a>
             <a href="../pages/Webshop.html">Webshop</a>
             <a href="../pages/ContactInfo.html">Contact</a>
         </div>
+
+        <!-- Spacer -->
+        <div class="nav-spacer" aria-hidden="true"></div>
     </nav>
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__backdrop" data-close="true"></div>
+
+        <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="mobile-menu__close" type="button" aria-label="Close menu" data-close="true">×</button>
+
+            <a href="../index.html">Home</a>
+            <a href="../pages/Become_A_Member.html">Lid worden</a>
+            <a href="../pages/Webshop.html">Webshop</a>
+            <a href="../pages/ContactInfo.html">Contact</a>
+        </div>
+    </div>
+
 </header>
 <main class="about-main">
     <section class="about-layout" aria-labelledby="docfiandre-title">
@@ -123,6 +156,71 @@
             <p>Heeft u nog vragen? Neem zeker contact op met ons.</p>
         </article>
     </section>
+    <section class="about-members" aria-labelledby="members-title">
+        <h2 id="members-title">Bestuur & Kernleden</h2>
+
+        <div class="members-grid">
+            <!-- MEMBER 1 -->
+            <article class="member-card" data-member="liesbet">
+                <img src="../images/about/Members/LIESBET-1-300x200.jpg" alt="Liesbet Vanneste">
+                <h3>Liesbet Vanneste</h3>
+                <p class="member-role">President</p>
+            </article>
+
+            <!-- MEMBER 2 -->
+            <article class="member-card" data-member="marc">
+                <img src="../images/about/Members/MARC-1-300x200.jpg" alt="Marc Gyselinck">
+                <h3>Marc Gyselinck</h3>
+                <p class="member-role">Vice-President</p>
+            </article>
+
+            <!-- MEMBER 3 -->
+            <article class="member-card" data-member="igor">
+                <img src="../images/about/Members/IGOR-1-300x200.jpg" alt="Igor Vandromme">
+                <h3>Igor Vandromme</h3>
+                <p class="member-role">Treasurer / Webmaster</p>
+            </article>
+
+            <!-- MEMBER 4 -->
+            <article class="member-card" data-member="dominique">
+                <img src="../images/about/Members/DOMINIQUE-e1667646375115-300x200.jpg" alt="Dominique Maene">
+                <h3>Dominique Maene</h3>
+                <p class="member-role">Events / Operations</p>
+            </article>
+
+            <!-- MEMBER 5 -->
+            <article class="member-card" data-member="sander">
+                <img src="../images/about/Members/SANDER-1-300x169.jpg" alt="Sander Van Der Perre">
+                <h3>Sander Van Der Perre</h3>
+                <p class="member-role">Events / Circuit</p>
+            </article>
+        </div>
+    </section>
+    <div id="memberModal" class="member-modal" aria-hidden="true">
+        <div class="member-modal__backdrop" data-close="true"></div>
+
+        <div class="member-modal__card">
+            <button class="member-modal__close" data-close="true">×</button>
+
+            <img id="memberModalImg" alt="">
+            <div class="member-modal__body">
+                <h3 id="memberModalName"></h3>
+                <p id="memberModalRole" class="modal-role"></p>
+
+                <div class="modal-contact">
+                    <p><strong>Email:</strong> <a id="memberModalEmail" href=""></a></p>
+                    <p><strong>Telefoon:</strong> <a id="memberModalPhone" href=""></a></p>
+                </div>
+
+                <div class="modal-about">
+                    <h4>Over mij</h4>
+                    <p id="memberModalAbout"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </main>
 <footer class="site-footer">
     <div class="footer-top">
@@ -163,6 +261,5 @@
 <script>
     document.getElementById("footerYear").textContent = new Date().getFullYear();
 </script>
-<script type="text/javascript" charset="utf-8" src="scripts/code.js"></script>
 </body>
 </html>

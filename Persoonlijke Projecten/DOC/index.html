@@ -10,27 +10,59 @@
     <img id="topDucatiLogo" alt="Logo van ducati" src="images/homepage/logo-ducati.png">
 
 
-    <!-- Taal selector (rechtven) -->
+    <!-- Taal selector (rechtven)
     <div class="lang">
         <a class="active" href="index.html" lang="nl" aria-label="Nederlands">NL</a>
         <a href="index-fr.html" lang="fr" aria-label="Français">FR</a>
         <a href="index-en.html" lang="en" aria-label="English">EN</a>
-    </div>
+    </div>-->
 
 
     <nav class="main-nav">
+        <!-- Mobile hamburger -->
+        <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open menu"
+                aria-controls="mobileMenu"
+                aria-expanded="false">
+        <span class="nav-toggle__bars" aria-hidden="true">
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+            <span class="nav-toggle__bar"></span>
+        </span>
+        </button>
+
+        <!-- Center logo (also home link) -->
         <a href="index.html" class="nav-logo">
             <img src="images/homepage/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
         </a>
 
-
+        <!-- Desktop links -->
         <div class="nav-links">
             <a href="pages/About_Us.html">Over ons</a>
             <a href="pages/Become_A_Member.html">Lid worden</a>
             <a href="pages/Webshop.html">Webshop</a>
             <a href="pages/ContactInfo.html">Contact</a>
         </div>
+
+        <!-- Spacer (keeps logo perfectly centered on mobile grid) -->
+        <div class="nav-spacer" aria-hidden="true"></div>
     </nav>
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__backdrop" data-close="true"></div>
+
+        <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="mobile-menu__close" type="button" aria-label="Close menu" data-close="true">×</button>
+
+            <a href="pages/About_Us.html">Over ons</a>
+            <a href="pages/Become_A_Member.html">Lid worden</a>
+            <a href="pages/Webshop.html">Webshop</a>
+            <a href="pages/ContactInfo.html">Contact</a>
+        </div>
+    </div>
+
 
 
     <div class="becomeAMemberPopUp">
@@ -137,23 +169,23 @@
 
 
                     <div class="event-modal__section">
-                        <div class="event-modal__label">DATE / TIME</div>
+                        <div class="event-modal__label">Datum / Tijd</div>
                         <div id="modalDateTime" class="event-modal__text"></div>
                     </div>
 
 
                     <div class="event-modal__section">
-                        <div class="event-modal__label">LOCATION</div>
+                        <div class="event-modal__label">Locatie</div>
                         <a id="modalLocation" class="event-modal__text" href="#" target="_blank" rel="noopener"></a>
                     </div>
                     <div class="event-modal__section">
-                        <div class="event-modal__label">DESCRIPTION</div>
+                        <div class="event-modal__label">Beschrijving</div>
                         <div id="modalDesc" class="event-modal__text event-modal__desc"></div>
                     </div>
 
 
                     <a id="modalFb" class="event-modal__fb" href="#" target="_blank" rel="noopener">
-                        View on Facebook
+                        Bekijk event op Facebook
                     </a>
                 </div>
             </div>

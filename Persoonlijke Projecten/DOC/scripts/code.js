@@ -137,14 +137,14 @@ setInterval(() => {
 
           <p class="event-card__location">${escapeHtml(ev.location || "")}</p>
 
-          <button class="event-card__btn" type="button">Read More</button>
+          <button class="event-card__btn" type="button">Meer Info</button>
         </div>
       </article>
     `;
     }
 
     async function loadEvents() {
-        const res = await fetch("./Json-Files/events.json", { cache: "no-store" });
+        const res = await fetch("Json-Files/events.json", { cache: "no-store" });
         if (!res.ok) throw new Error("Could not load events.json");
         const events = await res.json();
 
@@ -171,5 +171,43 @@ setInterval(() => {
         grid.innerHTML = `<p style="opacity:.85;">Could not load events.</p>`;
     }
 })();
+
+// =========================
+// MOBILE NAV (HOMEPAGE)
+// =========================
+(function () {
+    const toggle = document.querySelector(".nav-toggle");
+    const menu = document.getElementById("mobileMenu");
+    if (!toggle || !menu) return;
+
+    function openMenu() {
+        menu.classList.add("is-open");
+        menu.setAttribute("aria-hidden", "false");
+        toggle.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeMenu() {
+        menu.classList.remove("is-open");
+        menu.setAttribute("aria-hidden", "true");
+        toggle.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+    }
+
+    toggle.addEventListener("click", openMenu);
+
+    menu.addEventListener("click", (e) => {
+        if (e.target && e.target.dataset && e.target.dataset.close === "true") {
+            closeMenu();
+        }
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && menu.classList.contains("is-open")) {
+            closeMenu();
+        }
+    });
+})();
+
 
 window.addEventListener("resize", updateCarousel);

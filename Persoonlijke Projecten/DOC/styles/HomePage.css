@@ -1,7 +1,26 @@
+/* =========================================================
+   DOC FIANDRE – HOMEPAGE CSS
+   ---------------------------------------------------------
+   ORDER OF SECTIONS:
+   1) Theme Variables
+   2) Reset / Base
+   3) Header + Navigation
+   4) Mobile Navigation (hamburger + slide menu)
+   5) Pop-up (Become a member)
+   6) Social Media Icons
+   7) Main Layout Wrapper
+   8) Promo Section
+   9) Carousel
+   10) Events Grid + Cards
+   11) Events Modal
+   12) Ducati Logo Band
+   13) Footer
+   14) Media Queries (ALL at the bottom)
+   ========================================================= */
+
+
 /* =========================
-   THEME VARIABLES
-   Switch in HTML:
-   <html data-theme="a"> or <html data-theme="b">
+   1) THEME VARIABLES
    ========================= */
 
 /* Theme A (current dark) */
@@ -59,8 +78,9 @@ html[data-theme="b"]{
     --header-fade-to: #efefef;
 }
 
+
 /* =========================
-   BASE STYLES
+   2) RESET / BASE
    ========================= */
 
 * {
@@ -72,6 +92,15 @@ html, body {
     background: var(--bg);
     margin: 0;
 }
+
+.sk-fb-event{
+    background: var(--bg);
+}
+
+
+/* =========================
+   3) HEADER + NAVIGATION
+   ========================= */
 
 header {
     display: grid;
@@ -109,12 +138,7 @@ header::after {
     z-index: 0;
 }
 
-.sk-fb-event{
-    background: var(--bg);
-}
-
 header nav{
-    display: flex;
     margin-block: 1rem;
     min-width: 60%;
 }
@@ -128,10 +152,12 @@ header nav{
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 1rem 2rem;
     background-color: var(--surface);
     min-height: 100px;
     max-width: 90%;
+    width: 100%;
 }
 
 .nav-logo img {
@@ -164,7 +190,105 @@ header nav{
     padding: 5px;
 }
 
-/* becomeAMemberPopUp */
+/* Desktop: hide hamburger */
+.nav-toggle{
+    display: none;
+}
+
+/* Desktop spacer hidden */
+.nav-spacer{
+    display: none;
+}
+
+
+/* =========================
+   4) MOBILE NAV (hamburger + menu)
+   ========================= */
+
+.nav-toggle{
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-toggle__bars{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav-toggle__bar{
+    width: 26px;
+    height: 3px;
+    background: var(--text);
+    border-radius: 999px;
+}
+
+/* Mobile menu overlay */
+.mobile-menu{
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 9999;
+}
+
+.mobile-menu.is-open{
+    display: block;
+}
+
+.mobile-menu__backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+}
+
+.mobile-menu__panel{
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    height: 100%;
+    width: min(340px, 86vw);
+
+    background: var(--surface);
+    color: var(--text);
+    padding: 1.25rem 1.25rem 2rem;
+
+    box-shadow: 10px 0 30px rgba(0,0,0,0.4);
+}
+
+.mobile-menu__close{
+    border: none;
+    background: transparent;
+    color: var(--text);
+    font-size: 2rem;
+    font-weight: 900;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.mobile-menu__panel a{
+    display: block;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 1.4rem;
+    padding: 0.9rem 0.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobile-menu__panel a:hover{
+    color: var(--muted);
+}
+
+
+/* =========================
+   5) BECOME A MEMBER POPUP
+   ========================= */
+
 .becomeAMemberPopUp{
     display: inline-grid;
     place-items: center;
@@ -199,13 +323,18 @@ header nav{
     background: var(--popup-btn-hover-bg);
 }
 
-/* Social media */
+
+/* =========================
+   6) SOCIAL MEDIA ICONS
+   ========================= */
+
 .SocialMediaLinks {
     margin: 1.5rem auto;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 2rem;
+    max-width: 60%;
 }
 
 .SocialMediaLinks img {
@@ -237,55 +366,138 @@ header nav{
     transform: scale(1.05);
 }
 
-/* LANGUAGE */
-.lang{
-    position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-}
 
-.lang a{
-    display: inline-block;
-    text-decoration: none;
-    color: var(--lang-text);
-    background: var(--lang-bg);
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
-    font-weight: 700;
-}
-
-.lang a:hover{
-    filter: brightness(1.3);
-}
-
-.lang a.active{
-    outline: 2px solid var(--lang-active-outline);
-}
+/* =========================
+   7) MAIN WRAPPER
+   ========================= */
 
 main {
     width: 90%;
-    max-width: 1400px;   /* tweak: 1200 / 1320 / 1440 */
+    max-width: 1400px;
     margin-inline: auto;
     margin-top: 5rem;
 
     display: grid;
     place-items: center;
-    padding-inline: 2rem; /* breathing room on small screens */
+    padding-inline: 2rem;
 }
 
-.evenementen{
-    grid-template-columns: 1fr 1fr 1fr;
-   /* border: 10px solid var(--surface);
-    border-radius: 16px;*/
+
+/* =========================
+   8) PROMO SECTION
+   ========================= */
+
+.promo{
     width: 100%;
-   /* background-color: var(--surface);*/
+    margin-top: 4rem;
+}
+
+.promo-row{
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.promo-block{
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+    width: 50%;
+}
+
+.promo-img{
+    width: 100%;
+    min-width: 180px;
+    display: flex;
+    justify-content: center;
+}
+
+.promo-img img{
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+}
+
+.promo-text{
+    width: 90%;
+    color: var(--text);
+}
+
+.promo-text h2{
+    font-size: 4rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+}
+
+.promo-text p{
+    font-size: 1.25rem;
+    line-height: 1.9;
+    opacity: 0.95;
+}
+
+
+/* =========================
+   9) CAROUSEL
+   ========================= */
+
+.carousel{
+    background-color: var(--surface);
+
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    overflow: hidden;
+    border-radius: 16px;
+    margin-bottom: 4rem;
+    margin-top: 10rem;
+}
+
+.carousel-track{
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.carousel-track img{
+    width: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+    max-height: 600px;
+}
+
+.carousel-btn{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    font-size: 2.5rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    border-radius: 6px;
+    z-index: 2;
+}
+
+.carousel-btn:hover{
+    background: rgba(0,0,0,0.7);
+}
+
+.carousel-btn.prev{ left: 1rem; }
+.carousel-btn.next{ right: 1rem; }
+
+
+/* =========================
+   10) EVENTS GRID + CARDS
+   ========================= */
+
+.evenementen{
+    width: 100%;
     color: var(--text);
     padding-top: 5rem;
     font-size: 1.4rem;
     text-align: center;
-
 }
 
 .evenementen h2{
@@ -294,11 +506,6 @@ main {
     padding-bottom: 2rem;
     border-bottom: 5px solid var(--divider);
 }
-
-
-/* =========================
-   EVENTS GRID + CARDS
-   ========================= */
 
 .events-grid{
     width: 100%;
@@ -326,6 +533,17 @@ main {
 
 .event-card__body{
     padding: 1rem 1.1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 180px;
+}
+
+.event-card__btn{
+    margin-top: auto; /* keeps button pinned */
+}
+
+.event-card__location:empty{
+    display: none;
 }
 
 .event-card__top{
@@ -387,22 +605,9 @@ main {
     background: rgba(0,0,0,0.75);
 }
 
-/* 2 columns on medium */
-@media (max-width: 1100px){
-    .events-grid{
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-/* 1 column on phones */
-@media (max-width: 700px){
-    .events-grid{
-        grid-template-columns: 1fr;
-    }
-}
 
 /* =========================
-   MODAL POPUP
+   11) EVENTS MODAL
    ========================= */
 
 .event-modal{
@@ -426,7 +631,7 @@ main {
     position: relative;
     margin: 5vh auto;
     width: min(900px, 92vw);
-    min-width: 700px; /* per your requirement */
+    min-width: 700px;
     background: #fff;
     color: #111;
     border-radius: 18px;
@@ -435,7 +640,6 @@ main {
     box-shadow: 0 12px 40px rgba(0,0,0,0.45);
 }
 
-/* On small screens we must relax min-width or it will overflow */
 @media (max-width: 750px){
     .event-modal__card{
         min-width: auto;
@@ -491,12 +695,10 @@ main {
     text-decoration: underline;
 }
 
-/* X button outside the card (top-left of card area) */
 .event-modal__close{
     position: absolute;
     top: 3vh;
     left: calc(50% - min(900px, 92vw)/2 - 55px);
-    /* fallback if calc feels weird in some browsers */
     transform: translateX(0);
 
     width: 44px;
@@ -517,136 +719,29 @@ main {
     }
 }
 
-.evenementen{
-    margin-inline: auto;
-}
 
 /* =========================
-   CAROUSEL
+   12) DUCATI LOGO BAND
    ========================= */
 
-.carousel{
-    background-color: var(--surface);
-
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    overflow: hidden;
-    border-radius: 16px;
-    margin-bottom: 4rem;
-    margin-top: 10rem;
-}
-
-.carousel-track{
-    display: flex;
-    transition: transform 0.5s ease-in-out;
-}
-
-.carousel-track img{
-    width: 100%;
-    flex-shrink: 0;
-    object-fit: cover;
-    max-height: 600px;
-}
-
-.carousel-btn{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    font-size: 2.5rem;
-    padding: 0.3rem 0.8rem;
-    cursor: pointer;
-    border-radius: 6px;
-    z-index: 2;
-}
-
-.carousel-btn:hover{
-    background: rgba(0,0,0,0.7);
-}
-
-.carousel-btn.prev{ left: 1rem; }
-.carousel-btn.next{ right: 1rem; }
-
-/* ===== Promo section (flex) ===== */
-.promo{
-    width: 100%;
-    margin-top: 4rem;
-}
-
-.promo-row{
-    display: flex;
-    gap: 4rem;
-    align-items: flex-start;
-    justify-content: space-between;
-}
-
-.promo-block{
-    display: flex;
-    align-items: center;
-    gap: 2.5rem;
-    width: 50%;
-}
-
-.promo-img{
-    width: 100%;
-    min-width: 180px;
-    display: flex;
-    justify-content: center;
-}
-
-.promo-img img{
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-}
-
-.promo-text{
-    width: 90%;
-    color: var(--text);
-}
-
-.promo-text h2{
-    font-size: 4rem;
-    font-weight: 700;
-    margin-bottom: 1.2rem;
-}
-
-.promo-text p{
-    font-size: 1.25rem;
-    line-height: 1.9;
-    opacity: 0.95;
-}
-
-/* Full-width section that scales as the viewport changes */
 .ducati-logo {
     width: 100%;
     background: #111111;
     margin-top: 1rem;
-    /* controls logo height; tweak these if you want it shorter/taller */
     padding-block: clamp(10px, 1.2vw, 20px);
 }
-
 
 .ducati-logo__inner {
     width: 100%;
     display: flex;
-    align-items: baseline; /* keeps typography aligned like a logo */
-    justify-content: center; /* center in the main; change to flex-start if desired */
+    align-items: baseline;
+    justify-content: center;
     gap: clamp(10px, 1.3vw, 22px);
     line-height: 1;
-    white-space: nowrap; /* logo should stay on one line */
+    white-space: nowrap;
+
+    --logo-scale: clamp(18px, 6vw, 92px);
 }
-
-
-/* Use a single scaling factor so all elements grow/shrink together */
-.ducati-logo__inner {
-    --logo-scale: clamp(18px, 6vw, 92px); /* base size tied to viewport width */
-}
-
 
 .ducati-logo__brand {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
@@ -657,7 +752,6 @@ main {
     color: white;
 }
 
-
 .ducati-logo__sep {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     font-weight: 300;
@@ -667,7 +761,6 @@ main {
     transform: translateY(calc(var(--logo-scale) * 0.02));
 }
 
-
 .ducati-logo__title {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     font-weight: 300;
@@ -676,21 +769,19 @@ main {
     letter-spacing: 0.01em;
 }
 
-
 .ducati-logo__year {
     font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
     font-weight: 600;
     font-size: calc(var(--logo-scale) * 1.02);
-    color: #e31837; /* Ducati-ish red */
+    color: #e31837;
     letter-spacing: 0.01em;
 }
 
 
+/* =========================
+   13) FOOTER
+   ========================= */
 
-/*=======================
-footer
-========================
- */
 .site-footer{
     width: 100%;
     background: #0e0e0e;
@@ -698,13 +789,11 @@ footer
     margin-top: 6rem;
 }
 
-/* TOP AREA */
 .footer-top{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-
     padding: 3rem 6vw;
 }
 
@@ -715,26 +804,21 @@ footer
     white-space: nowrap;
 }
 
-/* Sponsors row */
 .sponsors{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 1.5rem;
-
-    flex-wrap: wrap; /* important for smaller screens */
+    flex-wrap: wrap;
 }
 
 .sponsor{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    /* consistent tile size like your screenshot */
     width: clamp(70px, 6vw, 110px);
     height: clamp(45px, 4.5vw, 80px);
     scale: 140%;
-
     text-decoration: none;
 }
 
@@ -742,7 +826,7 @@ footer
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: grayscale(0); /* keep as-is; set to 1 if you want monochrome */
+    filter: grayscale(0);
     opacity: 0.95;
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
@@ -752,7 +836,6 @@ footer
     opacity: 1;
 }
 
-/* BOTTOM BAR */
 .footer-bottom{
     border-top: 1px solid rgba(255,255,255,0.12);
     padding: 1.2rem 6vw;
@@ -767,7 +850,7 @@ footer
 }
 
 .footer-link{
-    color: #c1121f; /* ducati-ish red */
+    color: #c1121f;
     text-decoration: none;
 }
 
@@ -775,13 +858,28 @@ footer
     text-decoration: underline;
 }
 
+
 /* =========================
-   MEDIA QUERIES
+   14) MEDIA QUERIES
    ========================= */
 
-/* max-width: 1100px */
+/* Events grid: 2 columns */
 @media (max-width: 1100px){
-    /* nav */
+    .events-grid{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .promo-row{
+        flex-direction: column;
+        gap: 3rem;
+    }
+    .promo-block{
+        width: 100%;
+    }
+    .promo-text h2{
+        font-size: 3rem;
+    }
+
     .main-nav{
         flex-direction: column;
         gap: 1rem;
@@ -793,29 +891,21 @@ footer
         max-width: 100%;
     }
 
-    /* popup */
     .becomeAMemberPopUp{
         width: 60%;
         margin-block: 6rem;
         font-size: 1rem;
     }
+}
 
-    /* promo stack */
-    .promo-row{
-        flex-direction: column;
-        gap: 3rem;
-    }
-    .promo-block{
-        width: 100%;
-    }
-    .promo-text h2{
-        font-size: 3rem;
+/* Events grid: 1 column */
+@media (max-width: 850px){
+    .events-grid{
+        grid-template-columns: 1fr;
     }
 }
 
-
-
-/* Responsive: stack title above logos on narrow screens */
+/* Footer stack */
 @media (max-width: 800px){
     .footer-top{
         flex-direction: column;
@@ -827,36 +917,50 @@ footer
     }
 }
 
-/* =========================
-   RESPONSIVE BY ASPECT RATIO
-   ========================= */
+/* PHONE NAV: hamburger + centered logo, drawer menu */
+@media (max-width: 700px){
 
-/* Tall screens / portrait-ish (phones, narrow browser windows)
-   1/1 means square; smaller = taller than wide */
-@media (max-aspect-ratio: 1/1){
-    /* nav stacks */
     .main-nav{
-        flex-direction: column;
-        gap: 1rem;
-        width: 90%;
+        display: grid;
+        grid-template-columns: 48px 1fr 48px;
+        align-items: center;
+        justify-content: center;
+        width: 92%;
+    }
+
+    .nav-toggle{
+        display: inline-flex;
+        justify-self: start;
+
+    }
+
+    .nav-logo{
+        justify-self: center;
+    }
+
+    .nav-logo img{
+        margin-right: 0;
+        height: 52px;
     }
 
     .nav-links{
-        scale: 150%;
-        padding-block: 1rem;
-        max-width: 90%;
-
+        display: none;
     }
-    .nav-logo img{ margin-right: 0; }
 
-    /* popup scales down */
+    .nav-spacer{
+        display: block;
+        justify-self: end;
+    }
+}
+
+/* Aspect ratio tweaks you already used */
+@media (max-aspect-ratio: 1/1){
     .becomeAMemberPopUp{
         width: 85%;
         margin-top: 10rem;
         font-size: 3rem;
     }
 
-    /* social icons smaller + allow wrapping */
     .SocialMediaLinks{
         flex-wrap: wrap;
         gap: 8rem;
@@ -868,12 +972,10 @@ footer
         scale: 250%;
     }
 
-    /* carousel not too tall */
     .carousel-track img{
         max-height: 260px;
     }
 
-    /* promo stacks vertically */
     .promo-row{
         flex-direction: column;
         gap: 3rem;
@@ -881,10 +983,7 @@ footer
     .promo-block{
         width: 100%;
     }
-  main{
-  }
 }
-
 
 @media (max-aspect-ratio: 1.9/1){
     .promo-block{
@@ -903,4 +1002,3 @@ footer
         margin-top: 6rem;
     }
 }
-

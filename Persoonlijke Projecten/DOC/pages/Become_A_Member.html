@@ -4,33 +4,282 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../styles/member-page.css">
-    <title>Member page</title>
+    <title>Lid worden</title>
+
+    <!-- Page JS (nav + later modal form logic) -->
+    <script src="../scripts/member.js" defer></script>
 </head>
 <body>
-<header>
-    <img id="topDucatiLogo" alt="Logo van ducati" src="../images/homepage/logo-ducati.png">
+
+<header class="member-header">
     <nav class="main-nav">
+        <!-- Mobile hamburger -->
+        <button
+                class="nav-toggle"
+                type="button"
+                aria-label="Open menu"
+                aria-controls="mobileMenu"
+                aria-expanded="false">
+            <span class="nav-toggle__bars" aria-hidden="true">
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+                <span class="nav-toggle__bar"></span>
+            </span>
+        </button>
+
+        <!-- Center logo (home link) -->
         <a href="../index.html" class="nav-logo">
             <img src="../images/homepage/Logo-DOC-Fiandre_black.png" alt="Logo van DOC Fiandre">
         </a>
 
-
+        <!-- Desktop links -->
         <div class="nav-links">
-            <a href="../index.html">Home Pagina</a>
+            <a href="../pages/About_Us.html">Over ons</a>
             <a href="../pages/Become_A_Member.html">Lid worden</a>
             <a href="../pages/Webshop.html">Webshop</a>
             <a href="../pages/ContactInfo.html">Contact</a>
         </div>
+
+        <!-- Spacer -->
+        <div class="nav-spacer" aria-hidden="true"></div>
     </nav>
+
+    <!-- Mobile menu overlay -->
+    <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+        <div class="mobile-menu__backdrop" data-close="true"></div>
+
+        <div class="mobile-menu__panel" role="dialog" aria-modal="true" aria-label="Menu">
+            <button class="mobile-menu__close" type="button" aria-label="Close menu" data-close="true">×</button>
+
+            <a href="../pages/About_Us.html">Over ons</a>
+            <a href="../pages/Become_A_Member.html">Lid worden</a>
+            <a href="../pages/Webshop.html">Webshop</a>
+            <a href="../pages/ContactInfo.html">Contact</a>
+        </div>
+    </div>
+
+
 </header>
+
+<main class="member-main">
+    <section class="member-intro" aria-labelledby="member-intro-title">
+        <h1 id="member-intro-title">Lid worden</h1>
+        <p>Word lid van DOC Fiandre en geniet van ritten, events en voordelen.</p>
+    </section>
+    <section class="membership" aria-labelledby="membership-title">
+        <h2 id="membership-title">Kies je lidmaatschap</h2>
+
+        <div class="membership-grid">
+            <!-- Card 1 -->
+            <article class="membership-card membership-card--dark">
+                <h3>Zonder club T-shirt</h3>
+                <hr>
+                <ul>
+                    <li>1 jaar lidmaatschap bij DOC Fiandre</li>
+                </ul>
+
+                <button class="membership-btn" type="button" data-open="join" data-plan="zonder">
+                    <span class="membership-btn__title">Word lid</span>
+                    <span class="membership-btn__price">€30 / jaar</span>
+                </button>
+            </article>
+
+            <!-- Card 2 -->
+            <article class="membership-card membership-card--light">
+                <h3>Met club T-shirt</h3>
+                <hr>
+                <ul>
+                    <li>1 jaar lidmaatschap bij DOC Fiandre inclusief T-shirt t.w.v. €20</li>
+                </ul>
+
+                <button class="membership-btn" type="button" data-open="join" data-plan="met">
+                    <span class="membership-btn__title">Word lid</span>
+                    <span class="membership-btn__price">€40 / jaar</span>
+                </button>
+            </article>
+        </div>
+    </section>
+
+    <!-- Placeholder modal (form comes later) -->
+    <div id="joinModal" class="join-modal" aria-hidden="true">
+        <div class="join-modal__backdrop" data-close="true"></div>
+
+        <div class="join-modal__card" role="dialog" aria-modal="true" aria-label="Word lid">
+            <button class="join-modal__close" type="button" aria-label="Close" data-close="true">×</button>
+
+            <h3 id="joinModalTitle">Word lid</h3>
+            <p id="joinModalPlan" style="opacity:.85;"></p>
+
+            <form id="joinForm" class="join-form" novalidate>
+                <!-- Required fields -->
+                <label>
+                    Naam en voornaam<span class="req">*</span>
+                    <input name="fullName" type="text" required>
+                </label>
+
+                <label>
+                    Geboortedatum<span class="req">*</span>
+                    <input name="birthDate" type="date" required>
+                </label>
+
+                <label>
+                    Straat + Nummer<span class="req">*</span>
+                    <input name="street" type="text" required>
+                </label>
+
+                <label>
+                    Woonplaats<span class="req">*</span>
+                    <input name="city" type="text" required>
+                </label>
+
+                <label>
+                    Postcode<span class="req">*</span>
+                    <input name="postalCode" type="text" required>
+                </label>
+
+                <label>
+                    Land<span class="req">*</span>
+                    <input name="country" type="text" required>
+                </label>
+
+                <label>
+                    Gsm nummer<span class="req">*</span>
+                    <input name="phone" type="tel" required>
+                </label>
+
+                <label>
+                    E-mail<span class="req">*</span>
+                    <input name="email" type="email" required>
+                </label>
+
+                <label>
+                    Gebruikt u WhatsApp?<span class="req">*</span>
+                    <select name="whatsapp" required>
+                        <option value="" selected disabled>Kies…</option>
+                        <option value="Ja">Ja</option>
+                        <option value="Nee">Nee</option>
+                    </select>
+                </label>
+
+                <label>
+                    Uw Facebook naam
+                    <input name="facebookName" type="text">
+                </label>
+
+                <!-- Ducati section(s) -->
+                <div class="ducati-block">
+                    <div class="ducati-block__top">
+                        <h4>Ducati(s)</h4>
+                        <button type="button" class="ducati-add" id="addDucatiBtn">+ Ducati toevoegen</button>
+                    </div>
+
+                    <div id="ducatiList" class="ducati-list"></div>
+                </div>
+
+                <!-- Insurance / ICE -->
+                <label>
+                    Contact gegevens verzekering<span class="req">*</span>
+                    <input name="insuranceContact" type="text" required>
+                </label>
+
+                <label>
+                    ICE Naam contactpersoon<span class="req">*</span> (In Case of Emergency)
+                    <input name="iceName" type="text" required>
+                </label>
+
+                <label>
+                    ICE GSM Nummer contactpersoon<span class="req">*</span> (In Case of Emergency)
+                    <input name="icePhone" type="tel" required>
+                </label>
+
+                <!-- Gender -->
+                <label>
+                    Geslacht<span class="req">*</span>
+                    <select name="gender" required>
+                        <option value="" selected disabled>Kies…</option>
+                        <option value="Man">Man</option>
+                        <option value="Vrouw">Vrouw</option>
+                        <option value="X">X</option>
+                    </select>
+                </label>
+
+                <!-- T-shirt size (only when plan = met) -->
+                <div id="tshirtRow" class="tshirt-row" hidden>
+                    <label>
+                        T-shirt maat<span class="req">*</span>
+                        <select name="tshirtSize" id="tshirtSize">
+                            <option value="" selected disabled>Kies…</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                            <option value="XXL">XXL</option>
+                            <option value="3XL">3XL</option>
+                        </select>
+                    </label>
+                </div>
+
+                <!-- Extra info -->
+                <label>
+                    Extra info
+                    <textarea name="extraInfo" rows="4"></textarea>
+                </label>
+
+                <!-- Anti-spam question -->
+                <label>
+                    In welke stad is de Ducati fabriek gevestigd?<span class="req">*</span>
+                    <input name="quizCity" type="text" required placeholder="Antwoord…">
+                </label>
+
+                <!-- Terms -->
+                <label class="terms">
+                    <input name="terms" type="checkbox" required>
+                    Ik ga akkoord met <a href="#" class="terms-link">de Algemene Voorwaarden</a> van Ducati Official Club Fiandre<span class="req">*</span>
+                </label>
+
+                <button id="sendBtn" class="join-send" type="submit" disabled>
+                    Verzenden
+                </button>
+
+                <p id="formHint" class="form-hint"></p>
+            </form>
+
+            <!-- Ducati template -->
+            <template id="ducatiTemplate">
+                <div class="ducati-item">
+                    <div class="ducati-item__header">
+                        <strong>Ducati</strong>
+                        <button type="button" class="ducati-remove" aria-label="Verwijder Ducati">×</button>
+                    </div>
+
+                    <div class="ducati-item__grid">
+                        <label>
+                            Type Ducati
+                            <input type="text" name="ducatiType" placeholder="Type Ducati">
+                        </label>
+
+                        <label>
+                            Nummerplaat
+                            <input type="text" name="ducatiPlate" placeholder="Nummerplaat">
+                        </label>
+
+                        <label>
+                            Bouwjaar
+                            <input type="number" name="ducatiYear" min="1900" max="2100" placeholder="Bouwjaar">
+                        </label>
+                    </div>
+                </div>
+            </template>
+
+        </div>
+    </div>
+</main>
+
 <footer class="site-footer">
     <div class="footer-top">
         <p class="footer-title">Met dank aan onze sponsers</p>
 
-
         <div class="sponsors" aria-label="Sponsors">
-            <!-- Replace filenames with your real files in images/sponsors/ -->
-
             <a class="sponsor" href="https://www.ducatiherzele.be/" aria-label="Sponsor 2">
                 <img src="../images/sponsors/ducati-herzele2-site-1-150x150.jpg" alt="Sponsor 2">
             </a>
@@ -49,7 +298,6 @@
         </div>
     </div>
 
-
     <div class="footer-bottom">
         <p>
             Copyright © <span id="footerYear"></span> | Ducati Official Club Fiandre
@@ -58,10 +306,9 @@
     </div>
 </footer>
 
-
 <script>
     document.getElementById("footerYear").textContent = new Date().getFullYear();
 </script>
-<script type="text/javascript" charset="utf-8" src="scripts/code.js"></script>
+
 </body>
 </html>

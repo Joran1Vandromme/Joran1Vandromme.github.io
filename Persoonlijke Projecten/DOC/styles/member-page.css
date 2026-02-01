@@ -1,85 +1,536 @@
-* {
+/* =========================================================
+   DOC FIANDRE – MEMBER PAGE CSS
+   ORDER:
+   1) Base / Reset
+   2) Header + Fade
+   3) Navigation (desktop + mobile drawer)
+   4) Main layout + Membership cards
+   5) Join Modal
+   6) Footer
+   7) Media Queries
+   ========================================================= */
+
+/* =========================
+   1) BASE / RESET
+   ========================= */
+
+* { margin: 0; font-family: "Century Gothic"; }
+
+html, body{
     margin: 0;
-    font-family: "Century Gothic";
+    background: #e6e6e6; /* grey body */
 }
 
-html, body {
-    background: white;
-    margin: 0;
-}
+/* =========================
+   2) HEADER + FADE
+   ========================= */
 
-header {
-    display: grid;
+.member-header{
     position: relative;
+    display: grid;
     place-items: center;
-    background-color: #1c1c1c;
+    background-image: url("../images/homepage/Ducati_circuit_1.jpg"); /* reuse for now */
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    padding-bottom: 16rem;
-}
-header nav{
-    background-color: #121212;
-    padding: 4rem;
-    display: flex;
-    margin-block: 1rem;
-    min-width: 60%;
-}
-#topDucatiLogo{
-    max-width: 5%;
-    margin: 0.5rem;
-    filter: brightness(2);
-
+    padding-bottom: 10rem;
 }
 
-.main-nav {
+/* keep header content above fade */
+.member-header > *{ position: relative; z-index: 1; }
+
+.member-header::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 320px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 45%, #e6e6e6 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* =========================
+   MAIN INTRO
+   ========================= */
+.member-intro{
+    width: min(900px, 92vw);
+    margin: 0 auto 3rem;
+    text-align: center;
+    color: #111;
+}
+
+.member-intro h1{
+    font-size: clamp(2rem, 3.2vw, 3rem);
+    margin-bottom: 0.75rem;
+}
+
+.member-intro p{
+    font-size: clamp(1rem, 1.2vw, 1.15rem);
+    opacity: 0.85;
+}
+
+/* =========================
+   3) NAVIGATION
+   ========================= */
+
+.main-nav{
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     padding: 1rem 2rem;
-    background-color: white;
+    background: #fff;
     min-height: 100px;
-    max-width: 90%;
+    width: min(1200px, 92vw);
+    margin-top: 2rem;
 }
 
-.nav-logo img {
+.nav-logo img{
     height: 60px;
     transition: filter 0.2s ease;
-    margin-right: 3rem;
 }
 
-.nav-logo:hover img {
-    filter: brightness(0.4);
-}
+.nav-logo:hover img{ filter: brightness(0.4); }
 
-.nav-links {
+.nav-links{
     display: flex;
-    font-size: 1.4rem;
     gap: 2rem;
+    font-size: 1.4rem;
 }
 
-.nav-links a {
-    color: var(--text);
+.nav-links a{
+    color: #111;
     text-decoration: none;
     font-weight: 500;
     padding: 5px;
 }
 
-.nav-links a:hover {
-    color: var(--muted);
-    background-color: var(--nav-hover-bg);
+.nav-links a:hover{
+    background: #d1d1d1;
     border-radius: 3px;
-    padding: 5px;
+}
+
+/* Mobile hamburger hidden by default */
+.nav-toggle{ display: none; }
+.nav-spacer{ display: none; }
+
+.nav-toggle{
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 48px;
+    height: 48px;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-toggle__bars{
+    display: inline-flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nav-toggle__bar{
+    width: 26px;
+    height: 3px;
+    background: #111;
+    border-radius: 999px;
+}
+
+/* Drawer menu */
+.mobile-menu{
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 9999;
+}
+.mobile-menu.is-open{ display: block; }
+
+.mobile-menu__backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+}
+
+.mobile-menu__panel{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: min(340px, 86vw);
+    background: #1c1c1c;
+    color: #fff;
+    padding: 1.25rem 1.25rem 2rem;
+    box-shadow: 10px 0 30px rgba(0,0,0,0.4);
+}
+
+.mobile-menu__close{
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 2rem;
+    font-weight: 900;
+    cursor: pointer;
+    margin-bottom: 1rem;
+}
+
+.mobile-menu__panel a{
+    display: block;
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.4rem;
+    padding: 0.9rem 0.25rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobile-menu__panel a:hover{ opacity: 0.85; }
+
+/* =========================
+   4) MAIN + MEMBERSHIP CARDS
+   ========================= */
+
+.member-main{
+    width: min(1200px, 92vw);
+    margin: 4rem auto 0;
+}
+
+.membership h2{
+    font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+    margin-bottom: 2rem;
+    color: #111;
+    text-align: center;
+}
+
+.membership-grid{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+}
+
+.membership-card{
+    border-radius: 18px;
+    overflow: hidden;
+    padding: 3rem 3rem 2.5rem;
+    box-shadow: 0 10px 28px rgba(0,0,0,0.18);
+}
+
+.membership-card--dark{
+    background: #e00000;
+    color: #fff;
+}
+
+.membership-card--light{
+    background: #f5f5f5;
+    color: #111;
+}
+
+.membership-card h3{
+    font-size: clamp(2rem, 3vw, 3.2rem);
+    font-weight: 900;
+    text-transform: uppercase;
+}
+
+.membership-card hr{
+    margin: 1.4rem 0 1.6rem;
+    border: none;
+    height: 3px;
+    background: rgba(0,0,0,0.75);
+}
+
+.membership-card--dark hr{ background: rgba(0,0,0,0.85); }
+.membership-card--light hr{ background: rgba(0,0,0,0.65); }
+
+.membership-card ul{
+    margin: 0;
+    padding-left: 1.3rem;
+    font-size: 1.35rem;
+    line-height: 1.8;
+}
+
+.membership-btn{
+    margin-top: 2.5rem;
+    width: 100%;
+    border: none;
+    background: #0e0e0e;
+    color: #fff;
+    border-radius: 10px;
+    padding: 1.4rem 1rem;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    gap: 0.35rem;
+}
+
+.membership-btn:hover{
+    filter: brightness(1.08);
+}
+
+.membership-btn__title{
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.membership-btn__price{
+    font-size: 1.05rem;
+    opacity: 0.85;
+}
+
+/* =========================
+   5) JOIN MODAL (placeholder)
+   ========================= */
+
+.join-modal{
+    position: fixed;
+    inset: 0;
+    display: none;
+    z-index: 9999;
+}
+
+.join-modal.is-open{ display: block; }
+
+.join-modal__backdrop{
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+}
+
+.join-modal__card{
+    position: relative;
+    width: min(700px, 92vw);
+    margin: 12vh auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+
+.join-modal__close{
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    border: none;
+    background: transparent;
+    font-size: 2rem;
+    cursor: pointer;
+}
+.join-form{
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1rem;
+}
+
+.join-form label{
+    display: grid;
+    gap: 0.5rem;
+    font-weight: 700;
+    color: #111;
+}
+
+.join-form input,
+.join-form select,
+.join-form textarea{
+    width: 100%;
+    padding: 0.9rem 0.9rem;
+    border: 1px solid rgba(0,0,0,0.25);
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.join-form textarea{ resize: vertical; }
+
+.req{ color: #e31837; margin-left: 0.2rem; }
+
+/* =========================
+   TERMS CHECKBOX ROW
+   ========================= */
+
+.join-form .terms{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;          /* tighter spacing */
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+/* Prevents grid behavior from label default */
+.join-form .terms{
+    grid-template-columns: unset;
+}
+
+/* Checkbox sizing + alignment */
+.join-form .terms input[type="checkbox"]{
+    margin: 0;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+/* Link styling stays clean */
+.join-form .terms a{
+    color: #e31837;
+    text-decoration: underline;
+    white-space: nowrap;
 }
 
 
+.terms a{ color: #e31837; text-decoration: underline; }
+
+.join-send{
+    margin-top: 0.5rem;
+    background: #e31837;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    font-weight: 900;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.join-send:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.form-hint{
+    margin-top: -0.25rem;
+    opacity: 0.8;
+    font-size: 0.95rem;
+}
+
+/* Ducati dynamic section */
+.ducati-block{
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 14px;
+    padding: 1rem;
+    background: rgba(0,0,0,0.03);
+}
+
+.ducati-block__top{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.ducati-add{
+    border: none;
+    background: #111;
+    color: #ffffff;
+    padding: 0.7rem 0.9rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+}
+
+.ducati-list{
+    margin-top: 1rem;
+    display: grid;
+    gap: 1rem;
+}
+
+.ducati-item{
+    background: #111;
+    color: #ffffff;
+    border-radius: 14px;
+    padding: 1rem;
+}
+
+.ducati-item__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.ducati-remove{
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* =========================
+   DUCATI GRID – FIX OVERLAP
+   ========================= */
+
+.ducati-item__grid{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* allows shrink */
+    gap: 0.75rem;
+}
+
+/* Make sure the label doesn’t behave like the outer form label */
+.ducati-item__grid label{
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    min-width: 0; /* critical for grid shrink */
+}
+
+/* Inputs must be allowed to shrink inside grid cells */
+.ducati-item__grid input{
+    width: 100%;
+    min-width: 0; /* critical: prevents overflow/overlap */
+    box-sizing: border-box;
+}
 
 
+/* =========================
+   JOIN MODAL – SCROLL FIX
+   ========================= */
 
-/*=======================
-footer
-========================
- */
+.join-modal__card{
+    position: relative;
+    width: min(700px, 92vw);
+
+    /* 🔽 IMPORTANT PART */
+    max-height: 85vh;          /* never exceed viewport */
+    overflow-y: auto;          /* enable vertical scroll */
+    overscroll-behavior: contain;
+
+    margin: 7vh auto;
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.35);
+}
+
+/* Smooth scrolling on iOS */
+.join-modal__card{
+    -webkit-overflow-scrolling: touch;
+}
+
+.join-modal__close{
+    position: sticky;
+    top: 0;
+    margin-left: auto;
+    display: block;
+
+    border: none;
+    background: transparent;
+    font-size: 2rem;
+    cursor: pointer;
+    z-index: 2;
+}
+
+
+@media (max-width: 850px){
+    .ducati-item__grid{
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* =========================
+   6) FOOTER
+   ========================= */
+
 .site-footer{
     width: 100%;
     background: #0e0e0e;
@@ -87,13 +538,11 @@ footer
     margin-top: 6rem;
 }
 
-/* TOP AREA */
 .footer-top{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 2rem;
-
     padding: 3rem 6vw;
 }
 
@@ -104,26 +553,21 @@ footer
     white-space: nowrap;
 }
 
-/* Sponsors row */
 .sponsors{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 1.5rem;
-
-    flex-wrap: wrap; /* important for smaller screens */
+    flex-wrap: wrap;
 }
 
 .sponsor{
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    /* consistent tile size like your screenshot */
     width: clamp(70px, 6vw, 110px);
     height: clamp(45px, 4.5vw, 80px);
     scale: 140%;
-
     text-decoration: none;
 }
 
@@ -131,7 +575,6 @@ footer
     width: 100%;
     height: 100%;
     object-fit: contain;
-    filter: grayscale(0); /* keep as-is; set to 1 if you want monochrome */
     opacity: 0.95;
     transition: transform 0.15s ease, opacity 0.15s ease;
 }
@@ -141,7 +584,6 @@ footer
     opacity: 1;
 }
 
-/* BOTTOM BAR */
 .footer-bottom{
     border-top: 1px solid rgba(255,255,255,0.12);
     padding: 1.2rem 6vw;
@@ -156,67 +598,69 @@ footer
 }
 
 .footer-link{
-    color: #c1121f; /* ducati-ish red */
+    color: #c1121f;
     text-decoration: none;
 }
 
-.footer-link:hover{
-    text-decoration: underline;
-}
+.footer-link:hover{ text-decoration: underline; }
 
 /* =========================
-   MEDIA QUERIES
+   7) MEDIA QUERIES
    ========================= */
-
-/* max-width: 1100px */
+/* =========================
+   NAV: MID BREAKPOINT (stack links under logo)
+   ========================= */
 @media (max-width: 1100px){
-    /* nav */
     .main-nav{
         flex-direction: column;
         gap: 1rem;
-        width: 80%;
-    }
-    .main-nav a{ font-size: 1rem; }
-    .nav-logo img{
-        margin-right: 0;
-        max-width: 100%;
+        align-items: center;
+        justify-content: center;
     }
 
-}
-
-
-
-/* Responsive: stack title above logos on narrow screens */
-@media (max-width: 800px){
-    .footer-top{
-        flex-direction: column;
-        align-items: flex-start;
+    .nav-logo{
+        display: flex;
+        justify-content: center;
+        width: 100%;
     }
 
-    .sponsors{
-        justify-content: flex-start;
+    .nav-links{
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 1.5rem;
     }
 }
 
-/* =========================
-   RESPONSIVE BY ASPECT RATIO
-   ========================= */
+@media (max-width: 900px){
+    .membership-grid{
+        grid-template-columns: 1fr;
+    }
+}
 
-/* Tall screens / portrait-ish (phones, narrow browser windows)
-   1/1 means square; smaller = taller than wide */
-@media (max-aspect-ratio: 1/1){
-    /* nav stacks */
+@media (max-width: 700px){
     .main-nav{
-        flex-direction: column;
-        gap: 1rem;
-        width: 90%;
+        display: grid;
+        grid-template-columns: 48px 1fr 48px;
+        align-items: center;
+        justify-content: center;
+        width: 92vw;
+        padding: 1rem 1rem;
     }
-    .nav-logo img{ margin-right: 0; }
 
+    .nav-toggle{
+        display: inline-flex;
+        justify-self: start;
+    }
 
-}
+    .nav-links{ display: none; }
 
+    .nav-spacer{
+        display: block;
+        justify-self: end;
+    }
 
-@media (max-aspect-ratio: 1.9/1){
-
+    .nav-logo{
+        justify-self: center;
+    }
 }
